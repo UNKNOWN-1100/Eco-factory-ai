@@ -1,0 +1,1678 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Python Modules 1 &amp; 2 Notes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Kalam:wght@300;400;700&family=Reenie+Beanie&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one ruled notebook page with a red margin line; topics flow down like a student's notebook, sticky notes for boxes. Deliberately single-theme (paper). */
+:root{
+  --paper:#fbfbf4;
+  --rule:#d5e3ef;
+  --margin:#e7a1a1;
+  --ink:#1d2b4f;          /* blue-black fountain-pen ink */
+  --ink-soft:#4b5a7c;
+  --pen-red:#c2362b;
+  --pencil:#5f6470;
+  --code-bg:#eef2f6;
+  --code-ink:#16233f;
+  --note-yellow:#fff3a8;
+  --note-green:#dff5d8;
+  --note-pink:#ffe0ea;
+  --note-blue:#dcefff;
+  --note-lilac:#ece3ff;
+  --quiz:#2c7a4b;
+  --quiz-bg:rgba(226,246,230,.45);
+  --hl-yellow:rgba(255,231,40,.72);
+  --hl-green:rgba(120,230,120,.55);
+  --hl-pink:rgba(255,120,180,.45);
+  --hl-blue:rgba(110,195,255,.5);
+  --f-head:"Caveat","Segoe Print","Comic Sans MS",cursive;
+  --f-body:"Kalam","Segoe Print","Comic Sans MS",cursive;
+  --f-scrawl:"Reenie Beanie","Caveat",cursive;
+  --f-code:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --line:34px;
+  color-scheme:light;
+}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  background:#e9ecef;
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:18px;
+  line-height:1.75;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:28px 60px;
+}
+.page{
+  max-width:880px;margin:0 auto;
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(90deg, transparent 62px, var(--margin) 62px, var(--margin) 64px, transparent 64px),
+    repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--line) - 1px), var(--rule) calc(var(--line) - 1px), var(--rule) var(--line));
+  box-shadow:0 1px 2px rgba(0,0,0,.08), 0 10px 30px rgba(30,40,70,.12);
+  padding:40px 40px 50px 88px;
+  position:relative;
+}
+@media (max-width:640px){
+  body{font-size:17px}
+  .page{padding:28px 18px 40px 34px;
+    background-image:
+      linear-gradient(90deg, transparent 20px, var(--margin) 20px, var(--margin) 22px, transparent 22px),
+      repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--line) - 1px), var(--rule) calc(var(--line) - 1px), var(--rule) var(--line));}
+}
+/* punched holes */
+.page::before{content:"";position:absolute;left:22px;top:60px;bottom:60px;width:16px;
+  background:radial-gradient(circle at 8px 8px, #e9ecef 7px, transparent 8px) 0 0/16px 180px repeat-y;}
+@media (max-width:640px){.page::before{display:none}}
+
+h1,h2,h3,h4{font-family:var(--f-head);font-weight:700;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.6rem,7vw,3.6rem);color:var(--ink)}
+h2{font-size:clamp(2.2rem,5.5vw,2.8rem);color:var(--pen-red);margin-top:10px}
+h3{font-size:2rem;color:var(--ink);display:inline-block;
+   background:linear-gradient(transparent 62%, var(--hl-blue) 62%, var(--hl-blue) 92%, transparent 92%);padding:0 6px}
+h4{font-size:1.55rem;color:var(--ink-soft);margin-top:6px}
+p{margin:0}
+a{color:var(--ink)}
+a:focus-visible,summary:focus-visible{outline:2px dashed var(--pen-red);outline-offset:3px}
+.stack{display:flex;flex-direction:column;gap:14px}
+section.topic{display:flex;flex-direction:column;gap:14px;padding-top:26px;margin-top:16px;border-top:2px dashed #b9c6d6}
+section.module{display:flex;flex-direction:column;gap:14px;margin-top:40px}
+ul,ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px}
+li::marker{color:var(--pen-red)}
+b,strong{font-weight:700}
+
+/* Highlighters */
+.hl,.hg,.hp,.hb{padding:0 .22em;border-radius:.35em .2em .4em .25em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hl{background:linear-gradient(100deg, transparent .4%, var(--hl-yellow) 1.6%, var(--hl-yellow) 97%, transparent 99.5%)}
+.hg{background:linear-gradient(100deg, transparent .4%, var(--hl-green) 1.6%, var(--hl-green) 97%, transparent 99.5%)}
+.hp{background:linear-gradient(100deg, transparent .4%, var(--hl-pink) 1.6%, var(--hl-pink) 97%, transparent 99.5%)}
+.hb{background:linear-gradient(100deg, transparent .4%, var(--hl-blue) 1.6%, var(--hl-blue) 97%, transparent 99.5%)}
+.ul{text-decoration:underline wavy var(--pen-red);text-underline-offset:5px;text-decoration-thickness:1.5px}
+.red{color:var(--pen-red)}
+.circle{border:2px solid var(--pen-red);border-radius:50% 45% 55% 48%;padding:0 .35em}
+
+/* Margin scribble */
+.scribble{font-family:var(--f-scrawl);color:var(--pen-red);font-size:1.6rem;line-height:1;transform:rotate(-6deg);display:inline-block;margin-left:8px}
+
+/* code */
+code{font-family:var(--f-code);font-size:.82em;background:var(--code-bg);color:var(--code-ink);padding:1px 5px;border-radius:4px}
+.code{background:var(--code-bg);border:1.5px solid #c9d4e0;border-radius:10px 6px 12px 8px;overflow-x:auto;min-width:0}
+.code pre{margin:0;padding:12px 16px;font-family:var(--f-code);font-size:14.5px;line-height:1.6;color:var(--code-ink);white-space:pre}
+.code .out{border-top:1.5px dashed #b7c3d1;background:#fff;color:var(--pencil)}
+.code .out::before{content:"output";display:block;font-family:var(--f-head);font-size:18px;color:var(--pen-red);line-height:1}
+.c{color:#6b7a94;font-style:italic}
+.k{color:#a3226b;font-weight:600}
+.s{color:#1f7a3a}
+
+/* sticky notes */
+.note{padding:14px 18px;border-radius:2px;box-shadow:0 2px 6px rgba(40,40,60,.12);position:relative}
+.note .tag{font-family:var(--f-head);font-weight:700;font-size:1.45rem;display:block;line-height:1.1;margin-bottom:4px}
+.def{background:var(--note-yellow);transform:rotate(-.4deg)}
+.rule{background:var(--note-green);transform:rotate(.3deg)}
+.trap{background:var(--note-pink);transform:rotate(-.3deg)}
+.trap .tag{color:var(--pen-red)}
+.exam{background:var(--note-blue);transform:rotate(.35deg)}
+@media (prefers-reduced-motion:reduce){.note{transform:none}}
+
+/* tables */
+.tbl{overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;font-size:.95em}
+th,td{border:1.5px solid #9fb0c6;padding:4px 10px;text-align:left;vertical-align:top}
+th{font-family:var(--f-head);font-size:1.3rem;background:rgba(220,239,255,.6)}
+td code{white-space:nowrap}
+
+/* Exercises */
+.ex{border:2px solid var(--ink);border-radius:14px 8px 16px 10px;padding:16px 18px 18px;background:rgba(255,255,255,.65);display:flex;flex-direction:column;gap:10px}
+.ex > .tag{font-family:var(--f-head);font-size:1.8rem;font-weight:700;color:var(--ink);line-height:1}
+.ex ol{gap:10px}
+.lvl{font-family:var(--f-head);font-size:1.15rem;color:var(--pen-red);white-space:nowrap}
+details{margin-top:2px}
+summary{cursor:pointer;font-family:var(--f-head);font-size:1.2rem;color:var(--ink-soft);width:max-content;max-width:100%}
+details p{color:var(--pencil);font-size:.95em}
+
+/* Scenarios */
+.scen-wrap{display:flex;flex-direction:column;gap:18px;margin-top:6px}
+.scen{border:2px dashed var(--pen-red);border-radius:12px;padding:16px 18px;background:rgba(255,255,255,.7);display:flex;flex-direction:column;gap:8px}
+.scen h4{color:var(--pen-red);margin:0}
+.scen .uses{font-family:var(--f-head);font-size:1.15rem;color:var(--ink-soft)}
+
+/* header + toc */
+.cover{display:flex;flex-direction:column;gap:10px}
+.meta{font-family:var(--f-head);font-size:1.3rem;color:var(--ink-soft);line-height:1.3}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.95em}
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 26px}
+.toc div{min-width:0}
+.toc h4{color:var(--pen-red);font-size:1.5rem}
+.toc ol{padding-left:1.2em}
+.idx{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.idx > div{min-width:0}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.two > *{min-width:0}
+.boxchars{display:flex;flex-wrap:wrap;gap:0;font-family:var(--f-code);font-size:15px}
+.boxchars span{display:flex;flex-direction:column;align-items:center;border:1.5px solid var(--ink);margin-left:-1.5px;min-width:44px}
+.boxchars b{padding:4px 0;font-size:18px}
+.boxchars i{font-style:normal;font-size:12px;color:var(--pen-red);border-top:1.5px solid var(--ink);width:100%;text-align:center}
+.boxchars i + i{color:#1f6fb3}
+.end{text-align:center;font-family:var(--f-head);font-size:1.6rem;color:var(--ink-soft);margin-top:40px}
+
+/* Cover page */
+.coverpage{display:flex;flex-direction:column;gap:18px;padding-block:20px 10px}
+.cp-eyebrow{font-family:var(--f-head);font-size:1.5rem;color:var(--pen-red);letter-spacing:.04em}
+.cp-title{font-size:clamp(3.2rem,11vw,5.4rem);line-height:.95;color:var(--ink);
+  background:linear-gradient(transparent 58%, var(--hl-yellow) 58%, var(--hl-yellow) 90%, transparent 90%);display:inline;padding:0 8px;width:max-content;max-width:100%}
+.cp-sub{font-size:2.3rem;margin:0}
+.cp-fields{display:flex;flex-direction:column;gap:6px;font-size:1.1em}
+.cp-label{font-family:var(--f-head);font-size:1.5rem;font-weight:700;color:var(--ink-soft);margin-right:6px}
+.cp-val{border-bottom:2px solid var(--ink);padding:0 4px}
+.cp-student{margin-top:4px}
+.cp-student > div{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.cp-line{flex:1 1 180px;border-bottom:2px dotted var(--ink);min-height:1.4em}
+.warning{border:3px solid var(--pen-red);outline:1.5px solid var(--pen-red);outline-offset:4px;border-radius:6px;padding:16px 18px;background:var(--note-pink);display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.warn-head{font-family:var(--f-head);font-size:1.7rem;font-weight:700;color:var(--pen-red);line-height:1.15;text-wrap:balance}
+.warn-foot{font-family:var(--f-head);font-size:1.4rem;color:var(--ink);border-top:2px dashed var(--pen-red);padding-top:8px}
+.tear{height:0;border-top:3px dashed #9aa9bd;margin:30px -6px 26px;position:relative}
+.tear::after{content:"✂";position:absolute;left:0;top:-17px;font-size:22px;color:#9aa9bd;background:var(--paper);padding-right:6px}
+@media print{.tear{break-after:page;border:0}.tear::after{display:none}}
+
+/* Check your understanding */
+.quiz{border:2.5px solid var(--quiz);border-radius:16px 10px 18px 12px;padding:16px 18px 18px;background:var(--quiz-bg);display:flex;flex-direction:column;gap:16px}
+.quiz > .tag{font-family:var(--f-head);font-size:1.85rem;font-weight:700;color:var(--quiz);line-height:1}
+.qpart{display:flex;flex-direction:column;gap:6px;min-width:0}
+.qpart h5{margin:0;font-family:var(--f-head);font-size:1.45rem;color:var(--pen-red);line-height:1.1}
+.tf li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.tf li > span:first-child{flex:1 1 260px;min-width:0}
+.tfbox{font-family:var(--f-head);font-size:1.2rem;color:var(--ink-soft);border:1.5px dashed var(--ink-soft);border-radius:8px;padding:0 10px;white-space:nowrap}
+.blank{display:inline-block;width:5.5em;border-bottom:2px solid var(--ink);vertical-align:baseline;height:1em}
+.gap{background:var(--hl-yellow);border-radius:3px;font-weight:600}
+table.match td{width:50%}
+.act-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.act-wrap > *{min-width:0}
+.act{background:var(--note-lilac);transform:rotate(-.3deg)}
+.act + .act{transform:rotate(.35deg)}
+.act .tag{color:#5a3d9a}
+details.key{border-top:2px dashed var(--quiz);padding-top:8px}
+details.key summary{color:var(--quiz);font-size:1.35rem}
+.keybody{display:flex;flex-direction:column;gap:6px;margin-top:6px;color:var(--ink-soft);font-size:.95em}
+@media (prefers-reduced-motion:reduce){.act,.act + .act{transform:none}}
+</style>
+
+<div class="page">
+
+<section class="coverpage" aria-label="Cover page">
+  <p class="cp-eyebrow">Class Notes · First Year B.E.</p>
+  <h1 class="cp-title">Python Programming</h1>
+  <p class="scribble cp-sub">Modules 1 &amp; 2</p>
+
+  <div class="cp-fields">
+    <div><span class="cp-label">Subject Name:</span> <span class="cp-val">Python Programming</span></div>
+    <div><span class="cp-label">Subject Code:</span> <span class="cp-val">1BPLC105B / 1BPLC205B</span></div>
+    <div><span class="cp-label">Semester:</span> <span class="cp-val">I / II</span></div>
+    <div><span class="cp-label">Credits:</span> <span class="cp-val">4 (3 : 0 : 2 : 0)</span></div>
+    <div><span class="cp-label">Modules covered:</span> <span class="cp-val">1. Basics of Python · 2. Strings, Tuples &amp; Lists</span></div>
+  </div>
+
+  <div class="cp-fields cp-student">
+    <div><span class="cp-label">Student Name:</span> <span class="cp-line"></span></div>
+    <div><span class="cp-label">USN:</span> <span class="cp-line"></span></div>
+    <div><span class="cp-label">Branch / Section:</span> <span class="cp-line"></span></div>
+  </div>
+
+  <div class="warning">
+    <p class="warn-head">⚠ Statutory Warning: Depending only on notes may be injurious to your career</p>
+    <p>Dear student, these notes come with <b>two free career paths</b>. Please choose wisely.</p>
+    <p><b>Path A: the Notes Path.</b> Memorise these pages, reproduce them in the exam and collect a shiny grade. Then spend placement season puzzled about why the interviewer asked you to <i>write</i> code instead of reciting it. Highly recommended if your dream job is “having a good CGPA”.</p>
+    <p><b>Path B: the Engineer Path.</b> Treat these notes as a map, not the journey. Read the textbooks, type every program yourself, break it, debug it, and write it again. Slower, harder, more effort. Sadly, it also makes you an <span class="hl">employable graduate</span>.</p>
+    <p class="warn-foot">Companies hire people who can solve problems, not people who know which page of the notes has the answer.</p>
+  </div>
+</section>
+
+<div class="tear" aria-hidden="true"></div>
+
+<header class="cover">
+  <h1>Python Class Notes <span class="scribble">Modules 1 &amp; 2</span></h1>
+  <div class="note exam" style="margin-top:8px">
+    <span class="tag">How to read these notes</span>
+    <div class="legend">
+      <span><span class="hl">yellow</span> = definition / key term</span>
+      <span><span class="hg">green</span> = rule to remember</span>
+      <span><span class="hp">pink</span> = common mistake / trap</span>
+      <span><span class="hb">blue</span> = exam point</span>
+    </div>
+    <p style="margin-top:6px">Every topic ends with <b>Exercises</b> (★ easy → ★★★ tough). After that comes a <b>✔ Check Your Understanding</b> quiz (true/false, blanks, matching, debugging, missing code, output prediction and a class activity) with an answer key. Each module ends with <b>Think &amp; Apply</b> scenario problems. Type every example into the Python shell yourself. Reading code is not the same as writing it.</p>
+  </div>
+
+  <div class="toc" style="margin-top:14px">
+    <div>
+      <h4>Module 1</h4>
+      <ol>
+        <li><a href="#m1-way">The way of the program</a></li>
+        <li><a href="#m1-var">Variables, expressions &amp; statements</a></li>
+        <li><a href="#m1-iter">Iteration</a></li>
+        <li><a href="#m1-func">Functions</a></li>
+        <li><a href="#m1-scen">Think &amp; Apply (scenarios)</a></li>
+      </ol>
+    </div>
+    <div>
+      <h4>Module 2</h4>
+      <ol>
+        <li><a href="#m2-str">Strings</a></li>
+        <li><a href="#m2-tup">Tuples</a></li>
+        <li><a href="#m2-list">Lists</a></li>
+        <li><a href="#m2-scen">Think &amp; Apply (scenarios)</a></li>
+        <li><a href="#revise">Last-minute revision</a></li>
+      </ol>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= MODULE 1 ======================= -->
+<section class="module" id="m1">
+  <h2>Module 1 — Basics of Python Programming</h2>
+  <p class="meta">8 hours</p>
+
+  <!-- 1.1 -->
+  <section class="topic" id="m1-way">
+    <h3>1.1 The Way of the Program</h3>
+
+    <h4>The Python programming language</h4>
+    <p>Python is a <span class="hl">high-level, interpreted, general-purpose programming language</span> created by <b>Guido van Rossum</b> and first released in <b>1991</b>. High-level means it reads close to English and hides machine details. Interpreted means an <span class="hl">interpreter</span> reads and runs the program one statement at a time. There is no separate compile step that you see.</p>
+    <div class="two">
+      <div class="note def"><span class="tag">Interactive mode</span>Type at the <code>&gt;&gt;&gt;</code> prompt (the shell). Each line runs immediately. Good for testing small ideas.</div>
+      <div class="note def"><span class="tag">Script mode</span>Save the program in a file ending in <code>.py</code> and run the whole file. Used for real programs.</div>
+    </div>
+    <p>Why Python? Simple syntax, free and open source, runs on Windows/Linux/Mac (<span class="hb">portable</span>), huge standard library ("batteries included"), and used in data science, web, automation and AI.</p>
+
+    <h4>What is a program?</h4>
+    <p>A <span class="hl">program is a sequence of instructions that tells the computer how to perform a computation</span>. Almost every program, big or small, is built from five basic kinds of instruction:</p>
+    <div class="tbl"><table>
+      <tr><th>Instruction</th><th>Meaning</th><th>Python example</th></tr>
+      <tr><td>Input</td><td>get data from keyboard, file, network</td><td><code>name = input()</code></td></tr>
+      <tr><td>Output</td><td>show data on screen / save it</td><td><code>print(name)</code></td></tr>
+      <tr><td>Math</td><td>basic operations</td><td><code>total = a + b</code></td></tr>
+      <tr><td>Conditional</td><td>check a condition, choose what to run</td><td><code>if marks &gt;= 40:</code></td></tr>
+      <tr><td>Repetition</td><td>do something again and again</td><td><code>for i in range(5):</code></td></tr>
+    </table></div>
+    <p>Programming is really <span class="hg">breaking a big task into smaller and smaller sub-tasks</span> until each one can be done with these basic instructions. This is the "problem-solving approach".</p>
+
+    <h4>What is debugging?</h4>
+    <p>Errors in a program are called <span class="hl">bugs</span>. The process of finding and removing them is <span class="hl">debugging</span>. There are three kinds of errors. <span class="scribble">very imp!</span></p>
+    <div class="tbl"><table>
+      <tr><th>Error</th><th>When caught</th><th>What it means</th><th>Example</th></tr>
+      <tr><td><span class="hb">Syntax error</span></td><td>before the program runs</td><td>the code breaks Python's grammar rules</td><td><code>print("Hi"</code> → missing <code>)</code></td></tr>
+      <tr><td><span class="hb">Runtime error</span><br>(exception)</td><td>while the program runs</td><td>grammar is fine, but something impossible happens</td><td><code>10 / 0</code> → ZeroDivisionError</td></tr>
+      <tr><td><span class="hb">Semantic error</span><br>(logical)</td><td>never caught by Python!</td><td>program runs and gives the <b>wrong answer</b></td><td><code>avg = a + b / 2</code></td></tr>
+    </table></div>
+    <div class="note trap"><span class="tag">Trap</span><span class="hp">Semantic errors are the hardest to find</span> because there is no error message. The program does exactly what you wrote, not what you meant. In <code>avg = a + b / 2</code>, division happens first, so you get <code>a + (b/2)</code>. Correct: <code>avg = (a + b) / 2</code>.</div>
+
+    <div class="code"><pre><span class="c"># three bugs, three kinds</span>
+print(<span class="s">"Total"</span>       <span class="c"># SyntaxError: '(' was never closed</span>
+print(totl)          <span class="c"># NameError (runtime): name 'totl' is not defined</span>
+area = 2 * 3.14 * r  <span class="c"># semantic: this is circumference, not area!</span></pre></div>
+
+    <h4>Experimental debugging</h4>
+    <p>Debugging is like being a <span class="hl">detective</span>: you see clues (wrong output, error message), form a <b>hypothesis</b> about the cause, change the program, and test again. If the hypothesis was wrong, form a new one.</p>
+    <div class="note rule"><span class="tag">Debugging habits</span>
+      <ul>
+        <li><span class="hg">Start with a small program that works, then grow it a little at a time.</span> Test after each small change.</li>
+        <li>Read the error message from the <b>last line</b> upward. It tells you the error type and the line number.</li>
+        <li>Put <code>print()</code> statements to see the values of variables at each step.</li>
+        <li>Use <b>pythontutor.com</b> to watch your program run step by step.</li>
+        <li>Explain your code line by line to a friend (or a rubber duck!). You will often spot the bug yourself.</li>
+      </ul>
+    </div>
+
+    <div class="ex"><span class="tag">✎ Exercises 1.1</span>
+      <ol>
+        <li><span class="lvl">★</span> Classify each as syntax, runtime or semantic error, and fix it: (a) <code>print('Hello)</code> (b) <code>x = int("ten")</code> (c) <code>fahrenheit = celsius * 9 / 5 - 32</code> (d) <code>if x &gt; 5 print(x)</code> (e) <code>print(10 % 0)</code></li>
+        <li><span class="lvl">★</span> Write a script that prints your college ID card in 4 lines (name, USN, branch, blood group), with a border of <code>*</code> characters.</li>
+        <li><span class="lvl">★★</span> This program should print the area of a rectangle but prints a wrong value for length 5, width 3. Find the bug without running it, then verify: <code>l = 5; w = 3; area = l + w * 2; print(area)</code></li>
+        <li><span class="lvl">★★</span> Write one line of code that produces each error: <code>TypeError</code>, <code>NameError</code>, <code>ValueError</code>, <code>IndexError</code>, <code>ZeroDivisionError</code>. Note the exact message Python prints for each.</li>
+        <li><span class="lvl">★★★</span> A friend's program for average of 3 marks gives 103.33 for marks 90, 80, 70. Write down two different hypotheses that could cause this, a test input that confirms each, and the fix.
+          <details><summary>hint</summary><p>Hypothesis 1: precedence, <code>m1 + m2 + m3/3</code> gives 193.33, not 103.33, so try others. Hypothesis 2: one mark typed/read wrongly. What sum gives 310/3 ≈ 103.33?</p></details></li>
+      </ol>
+    </div>
+<div class="quiz" id="q11"><span class="tag">✔ Check Your Understanding 1.1</span>
+<div class="qpart"><h5>A. True or False</h5><ol class="tf">
+<li><span>Python is a compiled language; you must compile it before every run.</span><span class="tfbox">T / F</span></li>
+<li><span>A semantic error always produces an error message.</span><span class="tfbox">T / F</span></li>
+<li><span>Syntax errors are detected before the program starts running.</span><span class="tfbox">T / F</span></li>
+<li><span>Debugging means finding and removing errors from a program.</span><span class="tfbox">T / F</span></li>
+<li><span>A saved <code>.py</code> file is run in interactive mode.</span><span class="tfbox">T / F</span></li>
+</ol></div>
+<div class="qpart"><h5>B. Fill in the blanks</h5><ol>
+<li>Python was created by <span class="blank"></span> and first released in <span class="blank"></span>.</li>
+<li>The prompt shown in interactive mode is <span class="blank"></span>.</li>
+<li>An error that happens while the program is running is called a <span class="blank"></span> error or an <span class="blank"></span>.</li>
+<li>Errors in a program are called <span class="blank"></span>.</li>
+<li>Conditional execution and <span class="blank"></span> are two of the five basic kinds of instructions.</li>
+</ol></div>
+<div class="qpart"><h5>C. Match the following</h5><div class="tbl"><table class="match"><tr><th>Column A</th><th>Column B</th></tr>
+<tr><td>1. SyntaxError</td><td>p. adding a str and an int</td></tr>
+<tr><td>2. NameError</td><td>q. a closing bracket or colon is missing</td></tr>
+<tr><td>3. ZeroDivisionError</td><td>r. <code>int("abc")</code></td></tr>
+<tr><td>4. TypeError</td><td>s. a number is divided by 0</td></tr>
+<tr><td>5. ValueError</td><td>t. a variable is used before it is created</td></tr>
+</table></div></div>
+<div class="qpart"><h5>D. Debug the code</h5><p>This program should print the area of a circle. Find <b>every</b> bug and say whether it is a syntax, runtime or semantic error.</p><div class="code"><pre>radius = input("Enter radius: ")
+area = 2 * 3.14 * radius
+print("Area is " area)</pre></div></div>
+<div class="qpart"><h5>E. Fill in the missing code</h5><p>Complete the program that reads length and width and prints the perimeter of a rectangle.</p><div class="code"><pre>length = <span class="gap">____</span>(input("Length: "))
+width = float(input("Width: "))
+perimeter = <span class="gap">____</span> * (length + width)
+<span class="gap">____</span>("Perimeter =", perimeter)</pre></div></div>
+<div class="qpart"><h5>F. Predict the output</h5><p>Write the output in your notebook <b>before</b> running it.</p><div class="code"><pre>print("Bug", "free", sep="-")
+print(5 + 3 * 2)
+print("5" + "3" * 2)</pre></div></div>
+<div class="qpart"><h5>G. Creative activity</h5><div class="act-wrap">
+<div class="note act"><span class="tag">Error detective (pairs, 10 min)</span>Each student picks a chit saying syntax, runtime or semantic, and writes a 5-line program hiding <b>one</b> bug of that type. Swap with your partner. They get 2 minutes to find the bug, name its type and fix it. Score 1 point for each correct find.</div>
+<div class="note act"><span class="tag">Debugging comic strip</span>Draw a 4-panel comic of a detective solving a bug: the clue (output), the hypothesis, the experiment, and the fix. Use a real bug you met in the lab.</div>
+</div></div>
+<details class="key"><summary>Answer key (try first!)</summary><div class="keybody">
+<p><b>A.</b> 1-F · 2-F · 3-T · 4-T · 5-F</p>
+<p><b>B.</b> 1) Guido van Rossum, 1991 · 2) <code>&gt;&gt;&gt;</code> · 3) runtime, exception · 4) bugs · 5) repetition (also input, output, math)</p>
+<p><b>C.</b> 1-q · 2-t · 3-s · 4-p · 5-r</p>
+<p><b>D.</b> (1) <code>print("Area is " area)</code> is missing a comma → syntax. (2) <code>radius</code> is a str, so <code>2 * 3.14 * radius</code> → runtime TypeError; use <code>float(input(...))</code>. (3) <code>2 * 3.14 * radius</code> is the circumference, not the area → semantic; use <code>3.14 * radius ** 2</code>.</p>
+<p><b>E.</b> <code>float</code>, <code>2</code>, <code>print</code></p>
+<p><b>F.</b> <code>Bug-free</code>, then <code>11</code>, then <code>533</code></p>
+</div></details></div>
+  </section>
+
+  <!-- 1.2 -->
+  <section class="topic" id="m1-var">
+    <h3>1.2 Variables, Expressions &amp; Statements</h3>
+
+    <h4>Values and data types</h4>
+    <p>A <span class="hl">value</span> is a basic piece of data a program works with, like <code>5</code> or <code>"hello"</code>. Every value has a <span class="hl">type</span>. Use <code>type()</code> to check.</p>
+    <div class="tbl"><table>
+      <tr><th>Type</th><th>Name</th><th>Examples</th></tr>
+      <tr><td><code>int</code></td><td>integer (whole number, any size)</td><td><code>7, -42, 10**30</code></td></tr>
+      <tr><td><code>float</code></td><td>number with decimal point</td><td><code>3.14, -0.5, 2e3</code></td></tr>
+      <tr><td><code>str</code></td><td>string of characters</td><td><code>'hi', "Python", '''multi-line'''</code></td></tr>
+      <tr><td><code>bool</code></td><td>truth value</td><td><code>True, False</code></td></tr>
+      <tr><td><code>complex</code></td><td>complex number</td><td><code>3 + 4j</code></td></tr>
+    </table></div>
+    <div class="code"><pre>&gt;&gt;&gt; type(17)
+&gt;&gt;&gt; type(17.0)
+&gt;&gt;&gt; type(<span class="s">"17"</span>)</pre><pre class="out">&lt;class 'int'&gt;
+&lt;class 'float'&gt;
+&lt;class 'str'&gt;</pre></div>
+    <div class="note trap"><span class="tag">Trap</span><span class="hp"><code>"17"</code> is a string, not a number</span>, because it is in quotes. Also, don't write commas inside numbers: <code>1,000,000</code> becomes a tuple of three ints <code>(1, 0, 0)</code>!</div>
+
+    <h4>Variables</h4>
+    <p>A <span class="hl">variable is a name that refers to a value</span>. The <span class="hl">assignment statement</span> <code>=</code> creates the variable and binds it to the value. Think of the variable as a <b>label stuck on a value</b>, not a box.</p>
+    <div class="code"><pre>message = <span class="s">"Exam on Monday"</span>
+n = 17
+pi = 3.14159
+n = 20          <span class="c"># n now refers to a new value; 17 is forgotten</span></pre></div>
+    <p>Python is <span class="hg">dynamically typed</span>: you never declare a type. The same name can later refer to a value of a different type.</p>
+
+    <h4>Variable names and keywords</h4>
+    <div class="note rule"><span class="tag">Naming rules</span>
+      <ul>
+        <li>Can contain letters, digits and underscore <code>_</code>.</li>
+        <li><span class="hg">Must not start with a digit</span>: <code>2marks</code> ✗, <code>marks2</code> ✓</li>
+        <li>No spaces or special symbols: <code>my-name</code> ✗, <code>my name</code> ✗, <code>my_name</code> ✓</li>
+        <li><span class="hg">Case-sensitive</span>: <code>Marks</code> and <code>marks</code> are different variables.</li>
+        <li>Must not be a <b>keyword</b>.</li>
+      </ul>
+    </div>
+    <p><span class="hl">Keywords</span> are reserved words that define the language's structure. Python 3 has <span class="hb">35 keywords</span>. See them with <code>import keyword; print(keyword.kwlist)</code>:</p>
+    <div class="code"><pre>False   None    True    and     as      assert  async   await
+break   class   continue def    del     elif    else    except
+finally for     from    global  if      import  in      is
+lambda  nonlocal not    or      pass    raise   return  try
+while   with    yield</pre></div>
+    <p>Good style: choose names that say what the value means. <code>total_marks</code> is much better than <code>t</code>.</p>
+
+    <h4>Statements and evaluating expressions</h4>
+    <div class="two">
+      <div class="note def"><span class="tag">Statement</span>An instruction the interpreter can <b>execute</b>. It does something but has no value. e.g. <code>x = 5</code>, <code>print(x)</code>, <code>for</code>, <code>if</code>.</div>
+      <div class="note def"><span class="tag">Expression</span>A combination of values, variables, operators and function calls that the interpreter <b>evaluates to a value</b>. e.g. <code>x + 2</code>, <code>len("hi")</code>, <code>42</code></div>
+    </div>
+    <p>In the shell, typing an expression shows its value. In a script, an expression alone shows nothing. <span class="hp">You must <code>print()</code> it</span>.</p>
+
+    <h4>Operators and operands</h4>
+    <p><span class="hl">Operators</span> are special symbols for computations. The values they work on are <span class="hl">operands</span>.</p>
+    <div class="tbl"><table>
+      <tr><th>Operator</th><th>Meaning</th><th>Example</th><th>Result</th></tr>
+      <tr><td><code>+  -  *</code></td><td>add, subtract, multiply</td><td><code>7 * 2</code></td><td><code>14</code></td></tr>
+      <tr><td><code>/</code></td><td>true division <span class="hb">always gives float</span></td><td><code>7 / 2</code>, <code>6 / 2</code></td><td><code>3.5</code>, <code>3.0</code></td></tr>
+      <tr><td><code>//</code></td><td>floor division (rounds <b>down</b>)</td><td><code>17 // 5</code>, <code>-7 // 2</code></td><td><code>3</code>, <code>-4</code></td></tr>
+      <tr><td><code>%</code></td><td>modulus (remainder)</td><td><code>17 % 5</code></td><td><code>2</code></td></tr>
+      <tr><td><code>**</code></td><td>exponent (power)</td><td><code>2 ** 10</code></td><td><code>1024</code></td></tr>
+      <tr><td><code>== != &lt; &gt; &lt;= &gt;=</code></td><td>comparison → bool</td><td><code>5 &gt;= 3</code></td><td><code>True</code></td></tr>
+      <tr><td><code>and or not</code></td><td>logical</td><td><code>5 &gt; 3 and 2 &gt; 4</code></td><td><code>False</code></td></tr>
+    </table></div>
+    <div class="note trap"><span class="tag">Trap</span><span class="hp"><code>//</code> rounds toward minus infinity, not toward zero.</span> So <code>-7 // 2</code> is <code>-4</code>, not <code>-3</code>. And <code>-7 % 2</code> is <code>1</code>.</div>
+
+    <h4>Type converter functions</h4>
+    <div class="tbl"><table>
+      <tr><th>Call</th><th>Result</th><th>Note</th></tr>
+      <tr><td><code>int(3.99)</code></td><td><code>3</code></td><td><span class="hg">truncates toward zero</span>, does not round</td></tr>
+      <tr><td><code>int(-3.9)</code></td><td><code>-3</code></td><td>toward zero</td></tr>
+      <tr><td><code>int("42")</code></td><td><code>42</code></td><td>string of digits → int</td></tr>
+      <tr><td><code>int("3.5")</code></td><td>ValueError</td><td><span class="hp">use <code>int(float("3.5"))</code></span></td></tr>
+      <tr><td><code>float(7)</code>, <code>float("2.5")</code></td><td><code>7.0</code>, <code>2.5</code></td><td></td></tr>
+      <tr><td><code>str(99)</code></td><td><code>'99'</code></td><td>number → text</td></tr>
+      <tr><td><code>round(2.675, 2)</code></td><td><code>2.67</code></td><td>floats are approximate!</td></tr>
+    </table></div>
+
+    <h4>Order of operations</h4>
+    <p>When an expression has many operators, Python follows <span class="hb">PEMDAS</span>:</p>
+    <ol>
+      <li><b>P</b>arentheses <code>( )</code>, highest. Use them to force order or just for clarity.</li>
+      <li><b>E</b>xponent <code>**</code></li>
+      <li><b>M</b>ultiplication &amp; <b>D</b>ivision: <code>*  /  //  %</code> (same level)</li>
+      <li><b>A</b>ddition &amp; <b>S</b>ubtraction: <code>+  -</code></li>
+    </ol>
+    <p><span class="hg">Same level → evaluate left to right</span>, <span class="hp">except <code>**</code>, which goes right to left</span>.</p>
+    <div class="code"><pre>2 ** 3 ** 2      <span class="c"># 2 ** 9  → 512   (not 64)</span>
+-3 ** 2          <span class="c"># -(3**2) → -9    (** binds tighter than unary minus)</span>
+2 + 3 * 4 ** 2 // 5 % 3 - 1
+<span class="c">#   4**2=16 → 3*16=48 → 48//5=9 → 9%3=0 → 2+0-1 = 1</span></pre></div>
+
+    <h4>Operations on strings</h4>
+    <p>You cannot do math on strings, but two operators work:</p>
+    <div class="code"><pre><span class="s">"Py"</span> + <span class="s">"thon"</span>    <span class="c"># concatenation  → 'Python'</span>
+<span class="s">"Ha"</span> * 3          <span class="c"># repetition     → 'HaHaHa'</span>
+<span class="s">"5"</span> + 5           <span class="c"># TypeError: can only concatenate str (not "int") to str</span>
+<span class="s">"5"</span> + str(5)      <span class="c"># '55'</span></pre></div>
+
+    <h4>Input</h4>
+    <p>The built-in <code>input(prompt)</code> shows the prompt, waits for the user, and returns what they typed. <span class="hp">input() ALWAYS returns a string</span>, even if the user types a number.</p>
+    <div class="code"><pre>name = input(<span class="s">"Your name: "</span>)
+age  = int(input(<span class="s">"Your age: "</span>))       <span class="c"># convert immediately</span>
+cgpa = float(input(<span class="s">"Your CGPA: "</span>))
+print(name, <span class="s">"will be"</span>, age + 1, <span class="s">"next year"</span>)</pre></div>
+
+    <h4>Composition</h4>
+    <p><span class="hl">Composition</span> = combining small building blocks (values, variables, expressions, function calls) into bigger ones. Instead of four separate lines, you can write one:</p>
+    <div class="code"><pre>print(<span class="s">"Area ="</span>, 3.14159 * float(input(<span class="s">"radius: "</span>)) ** 2)</pre></div>
+    <p>Composition makes code shorter, but <span class="hg">readability first</span>. Use separate lines when one line gets confusing.</p>
+
+    <h4>The modulus operator <code>%</code></h4>
+    <p>Gives the <span class="hl">remainder</span> after integer division. It looks small but is used everywhere: <span class="scribble">exam fav!</span></p>
+    <div class="tbl"><table>
+      <tr><th>Use</th><th>Code</th></tr>
+      <tr><td>even or odd?</td><td><code>n % 2 == 0</code></td></tr>
+      <tr><td>is x divisible by y?</td><td><code>x % y == 0</code></td></tr>
+      <tr><td>last digit of n</td><td><code>n % 10</code> (remove it with <code>n // 10</code>)</td></tr>
+      <tr><td>last two digits</td><td><code>n % 100</code></td></tr>
+      <tr><td>wrap-around (clock)</td><td><code>(hour + h) % 24</code></td></tr>
+      <tr><td>minutes → h, m</td><td><code>h = mins // 60; m = mins % 60</code></td></tr>
+    </table></div>
+
+    <div class="ex"><span class="tag">✎ Exercises 1.2</span>
+      <ol>
+        <li><span class="lvl">★</span> Without running, find the value and type: <code>7 // 2</code>, <code>7.0 // 2</code>, <code>-7 % 3</code>, <code>2 ** -1</code>, <code>"3" * 3</code>, <code>int("7") + float("0.5")</code>, <code>10 / 5</code>. Then verify in the shell.</li>
+        <li><span class="lvl">★</span> Read temperature in Celsius and print Fahrenheit (<code>F = C × 9/5 + 32</code>) rounded to 1 decimal.</li>
+        <li><span class="lvl">★★</span> Read a total number of seconds (e.g. 98765) and print it as <code>days : hours : minutes : seconds</code> using only <code>//</code> and <code>%</code>.</li>
+        <li><span class="lvl">★★</span> Read a 4-digit number and print (a) the sum of its digits, (b) the number reversed, using only arithmetic (no strings).</li>
+        <li><span class="lvl">★★</span> Swap two variables in two different ways: (a) using a temp variable, (b) without any temp variable using arithmetic. Why does (b) fail for floats sometimes?</li>
+        <li><span class="lvl">★★</span> It is 9 o'clock now. Read the number of hours (can be 1000+) until an alarm rings and print the time on a 12-hour clock with AM/PM.</li>
+        <li><span class="lvl">★★★</span> Insert parentheses into <code>2 + 3 * 4 - 6 / 2</code> to get these results: 17.0, 7.0, 4.0, −1.0. How many <i>different</i> results are possible in total?
+          <details><summary>hint</summary><p>Try grouping the subtraction: <code>(2 + 3) * (4 - 6) / 2</code> = −5.0. List every grouping systematically, the way you would nest loops.</p></details></li>
+        <li><span class="lvl">★★★</span> Read principal P, yearly rate R and years T. Print simple interest and compound interest (compounded yearly and monthly), formatted to 2 decimals. Which is bigger and by how much?</li>
+      </ol>
+    </div>
+<div class="quiz" id="q12"><span class="tag">✔ Check Your Understanding 1.2</span>
+<div class="qpart"><h5>A. True or False</h5><ol class="tf">
+<li><span><code>7 / 2</code> and <code>7 // 2</code> give the same result.</span><span class="tfbox">T / F</span></li>
+<li><span><code>_count</code> is a valid variable name.</span><span class="tfbox">T / F</span></li>
+<li><span><code>input()</code> returns an int when the user types a number.</span><span class="tfbox">T / F</span></li>
+<li><span><code>2 <b> 3 </b> 2</code> is equal to 64.</span><span class="tfbox">T / F</span></li>
+<li><span><code>int(4.99)</code> gives 5.</span><span class="tfbox">T / F</span></li>
+<li><span><code>"3" * 3</code> gives <code>"333"</code>.</span><span class="tfbox">T / F</span></li>
+</ol></div>
+<div class="qpart"><h5>B. Fill in the blanks</h5><ol>
+<li><code>-7 // 2</code> evaluates to <span class="blank"></span>.</li>
+<li><code>17 % 5</code> evaluates to <span class="blank"></span>.</li>
+<li>Python 3 has <span class="blank"></span> keywords.</li>
+<li>The built-in function <span class="blank"></span> tells you the data type of a value.</li>
+<li><code>int("3.5")</code> raises a <span class="blank"></span>.</li>
+</ol></div>
+<div class="qpart"><h5>C. Match the following</h5><div class="tbl"><table class="match"><tr><th>Column A</th><th>Column B</th></tr>
+<tr><td>1. <code>10 % 3</code></td><td>p. -4</td></tr>
+<tr><td>2. <code>10 // 3</code></td><td>q. 2.5</td></tr>
+<tr><td>3. <code>10 / 4</code></td><td>r. 1</td></tr>
+<tr><td>4. <code>2 ** 4</code></td><td>s. 'abcd'</td></tr>
+<tr><td>5. <code>-2 ** 2</code></td><td>t. 3</td></tr>
+<tr><td>6. <code>"ab" + "cd"</code></td><td>u. 16</td></tr>
+</table></div></div>
+<div class="qpart"><h5>D. Debug the code</h5><p>This program should print the average of two numbers. It has <b>four</b> bugs. Find and fix them.</p><div class="code"><pre>1st_num = int(input("First: "))
+second = int(input("Second: ")
+average = 1st_num + second / 2
+print("Average: " + average)</pre></div></div>
+<div class="qpart"><h5>E. Fill in the missing code</h5><p>Complete the program that converts total minutes into hours and minutes (e.g. 135 → 2 h 15 m).</p><div class="code"><pre>total = int(input("Minutes: "))
+hours = total <span class="gap">____</span> 60
+mins = total <span class="gap">____</span> 60
+print(hours, "h", <span class="gap">____</span>, "m")</pre></div></div>
+<div class="qpart"><h5>F. Predict the output</h5><p>Write the output in your notebook <b>before</b> running it.</p><div class="code"><pre>x = 7
+y = x // 2 + x % 2
+x = x * 2
+print(x, y, x / y, type(x / y))</pre></div></div>
+<div class="qpart"><h5>G. Creative activity</h5><div class="act-wrap">
+<div class="note act"><span class="tag">Be the interpreter</span>Two students come to the board. One evaluates <code>(8 + 2) * 3 <b> 2 // 4 % 5 - 1</code> </b>one operator at a time**, writing each step. The other checks every step against PEMDAS. Then swap roles with a new expression made up by the class.</div>
+<div class="note act"><span class="tag">Variable-name court</span>Each student writes 3 variable names on chits (some valid, some invalid, some badly styled). The class is the jury: valid or invalid, and if valid, is it a good name? The writer must defend their names.</div>
+</div></div>
+<details class="key"><summary>Answer key (try first!)</summary><div class="keybody">
+<p><b>A.</b> 1-F · 2-T · 3-F · 4-F (512) · 5-F (4) · 6-T</p>
+<p><b>B.</b> 1) -4 · 2) 2 · 3) 35 · 4) <code>type()</code> · 5) ValueError</p>
+<p><b>C.</b> 1-r · 2-t · 3-q · 4-u · 5-p · 6-s</p>
+<p><b>D.</b> (1) <code>1st_num</code> starts with a digit → invalid name (rename to <code>first</code>). (2) missing <code>)</code> at the end of line 2. (3) precedence: use <code>(first + second) / 2</code>. (4) <code>"Average: " + average</code> adds str and float → use <code>print("Average:", average)</code>.</p>
+<p><b>E.</b> <code>//</code>, <code>%</code>, <code>mins</code></p>
+<p><b>F.</b> <code>14 4 3.5 &lt;class 'float'&gt;</code></p>
+</div></details></div>
+  </section>
+
+  <!-- 1.3 -->
+  <section class="topic" id="m1-iter">
+    <h3>1.3 Iteration</h3>
+    <p><span class="hl">Iteration</span> means repeating a set of statements. Computers are great at doing boring repeated work without mistakes.</p>
+
+    <div class="note def"><span class="tag">Quick recap: if / elif / else</span>
+      Loops almost always need decisions inside them. Indentation (4 spaces) marks the block. <span class="hp">Don't forget the colon <code>:</code></span>
+      <div class="code" style="margin-top:6px"><pre><span class="k">if</span> marks &gt;= 90:
+    grade = <span class="s">"S"</span>
+<span class="k">elif</span> marks &gt;= 40:
+    grade = <span class="s">"Pass"</span>
+<span class="k">else</span>:
+    grade = <span class="s">"Fail"</span></pre></div>
+    </div>
+
+    <h4>Assignment</h4>
+    <p><span class="hp"><code>=</code> is assignment, <code>==</code> is comparison.</span> <code>a = 7</code> makes a refer to 7. <code>a == 7</code> asks "is a equal to 7?" and gives True/False. Assignment is <b>not</b> symmetric: <code>7 = a</code> is an error.</p>
+    <p>Python also allows <span class="hg">tuple (multiple) assignment</span>: <code>a, b = 3, 4</code> and the famous swap <code>a, b = b, a</code>.</p>
+
+    <h4>Updating variables</h4>
+    <div class="code"><pre>count = 0            <span class="c"># initialize first!</span>
+count = count + 1    <span class="c"># increment</span>
+count += 1           <span class="c"># shorthand; also -=, *=, /=, //=, %=</span></pre></div>
+    <div class="note trap"><span class="tag">Trap</span><span class="hp">You must initialize a variable before updating it.</span> <code>total = total + 5</code> on a fresh variable gives <code>NameError</code>.</div>
+
+    <h4>The <code>for</code> loop</h4>
+    <p>A <span class="hl"><code>for</code> loop repeats once for each item in a sequence</span>. Use it when you know <b>how many times</b> or <b>what items</b> to loop over.</p>
+    <div class="code"><pre><span class="k">for</span> friend <span class="k">in</span> [<span class="s">"Asha"</span>, <span class="s">"Ravi"</span>, <span class="s">"Meena"</span>]:
+    print(<span class="s">"Hi"</span>, friend)
+
+<span class="k">for</span> i <span class="k">in</span> range(1, 11, 2):   <span class="c"># start, stop (excluded!), step</span>
+    print(i, end=<span class="s">" "</span>)</pre><pre class="out">Hi Asha
+Hi Ravi
+Hi Meena
+1 3 5 7 9</pre></div>
+    <div class="note rule"><span class="tag">range() cheat-sheet</span>
+      <code>range(5)</code> → 0 1 2 3 4 · <code>range(2, 6)</code> → 2 3 4 5 · <code>range(10, 0, -3)</code> → 10 7 4 1 · <span class="hg">stop value is never included</span>
+    </div>
+
+    <h4>The <code>while</code> statement</h4>
+    <p>A <span class="hl"><code>while</code> loop repeats as long as its condition is True</span>. Use it when you <b>don't know in advance</b> how many times to repeat.</p>
+    <ol>
+      <li>Evaluate the condition → True or False.</li>
+      <li>If False, exit the loop, continue with the next statement.</li>
+      <li>If True, run the body, then go back to step 1.</li>
+    </ol>
+    <div class="code"><pre>n = int(input(<span class="s">"Enter n: "</span>))
+total, i = 0, 1
+<span class="k">while</span> i &lt;= n:
+    total += i
+    i += 1              <span class="c"># the loop variable MUST change</span>
+print(<span class="s">"Sum ="</span>, total)</pre></div>
+    <div class="note trap"><span class="tag">Trap: infinite loop</span><span class="hp">If nothing in the body moves the condition toward False, the loop never ends.</span> Forgetting <code>i += 1</code> above is the classic mistake. Press <b>Ctrl+C</b> to stop it.</div>
+
+    <h4>The Collatz 3n + 1 sequence</h4>
+    <p>Rule: if n is even, the next term is n/2; if odd, it is 3n + 1. Stop when n becomes 1.</p>
+    <div class="code"><pre><span class="k">def</span> seq3np1(n):
+    <span class="s">"""Print the 3n+1 sequence from n, stopping at 1."""</span>
+    <span class="k">while</span> n != 1:
+        print(n, end=<span class="s">", "</span>)
+        <span class="k">if</span> n % 2 == 0:
+            n = n // 2
+        <span class="k">else</span>:
+            n = n * 3 + 1
+    print(n, end=<span class="s">".\n"</span>)
+
+seq3np1(3)
+seq3np1(6)</pre><pre class="out">3, 10, 5, 16, 8, 4, 2, 1.
+6, 3, 10, 5, 16, 8, 4, 2, 1.</pre></div>
+    <p><span class="hb">Why is it famous?</span> Nobody has proved that it reaches 1 for <i>every</i> n (the <b>Collatz conjecture</b>). It shows that we can't always know in advance how many times a <code>while</code> loop will run. That is exactly why <code>while</code> exists.</p>
+
+    <h4>Tables</h4>
+    <p>Loops are great for printing tables. <code>\t</code> is a tab character that lines up columns.</p>
+    <div class="code"><pre>print(<span class="s">"n"</span>, <span class="s">"\t"</span>, <span class="s">"n²"</span>, <span class="s">"\t"</span>, <span class="s">"2ⁿ"</span>)
+<span class="k">for</span> x <span class="k">in</span> range(1, 6):
+    print(x, <span class="s">"\t"</span>, x**2, <span class="s">"\t"</span>, 2**x)</pre><pre class="out">n 	 n² 	 2ⁿ
+1 	 1 	 2
+2 	 4 	 4
+3 	 9 	 8
+4 	 16 	 16
+5 	 25 	 32</pre></div>
+
+    <h4>Two-dimensional tables</h4>
+    <p>A 2-D table has rows <b>and</b> columns, so we need a <span class="hl">nested loop</span>: an outer loop for rows, an inner loop for columns. <span class="hg">The inner loop finishes completely for every single step of the outer loop.</span></p>
+    <div class="code"><pre><span class="k">for</span> i <span class="k">in</span> range(1, 5):            <span class="c"># rows</span>
+    <span class="k">for</span> j <span class="k">in</span> range(1, 6):        <span class="c"># columns</span>
+        print(i * j, end=<span class="s">"\t"</span>)
+    print()                       <span class="c"># new line after each row</span></pre><pre class="out">1	2	3	4	5
+2	4	6	8	10
+3	6	9	12	15
+4	8	12	16	20</pre></div>
+
+    <h4><code>break</code> and <code>continue</code></h4>
+    <div class="two">
+      <div class="note def"><span class="tag">break</span><span class="hl">Exits the loop immediately</span>, skipping the rest of the body and all remaining iterations.</div>
+      <div class="note def"><span class="tag">continue</span><span class="hl">Skips the rest of this iteration</span> and jumps to the next one. The loop keeps going.</div>
+    </div>
+    <div class="code"><pre><span class="c"># add numbers until user enters 0; ignore negatives</span>
+total = 0
+<span class="k">while</span> True:
+    x = int(input(<span class="s">"number (0 to stop): "</span>))
+    <span class="k">if</span> x == 0:
+        <span class="k">break</span>            <span class="c"># leave the loop</span>
+    <span class="k">if</span> x &lt; 0:
+        <span class="k">continue</span>         <span class="c"># skip negative, ask again</span>
+    total += x
+print(<span class="s">"Total of positives:"</span>, total)</pre></div>
+    <p>The pattern <code>while True: … break</code> is called a <span class="hb">middle-test loop</span>. The exit check sits in the middle of the body, not at the top.</p>
+
+    <h4>Paired data</h4>
+    <p>Data often comes in <b>pairs</b>, like a name and a year. Store each pair as a tuple and keep the tuples in a list. A for loop can <span class="hg">unpack each pair directly into two variables</span>.</p>
+    <div class="code"><pre>students = [(<span class="s">"Asha"</span>, 2006), (<span class="s">"Ravi"</span>, 2005), (<span class="s">"Meena"</span>, 2007)]
+<span class="k">for</span> (name, year) <span class="k">in</span> students:
+    print(name, <span class="s">"was born in"</span>, year)</pre></div>
+
+    <h4>Nested loops for nested data</h4>
+    <p>When data is nested (each student has a <b>list</b> of subjects), use a nested loop: the outer loop walks over students, the inner loop over that student's subjects.</p>
+    <div class="code"><pre>students = [
+    (<span class="s">"Asha"</span>,  [<span class="s">"Maths"</span>, <span class="s">"Python"</span>, <span class="s">"Physics"</span>]),
+    (<span class="s">"Ravi"</span>,  [<span class="s">"Python"</span>, <span class="s">"Chemistry"</span>]),
+    (<span class="s">"Meena"</span>, [<span class="s">"Maths"</span>, <span class="s">"Python"</span>, <span class="s">"Mechanics"</span>, <span class="s">"English"</span>]),
+]
+<span class="c"># how many students take Python?</span>
+counter = 0
+<span class="k">for</span> (name, subjects) <span class="k">in</span> students:
+    <span class="k">for</span> s <span class="k">in</span> subjects:
+        <span class="k">if</span> s == <span class="s">"Python"</span>:
+            counter += 1
+print(<span class="s">"Python students:"</span>, counter)</pre><pre class="out">Python students: 3</pre></div>
+
+    <div class="ex"><span class="tag">✎ Exercises 1.3</span>
+      <ol>
+        <li><span class="lvl">★</span> Print the multiplication table of a number N from 1 to 20 in the format <code>7 x 3 = 21</code>.</li>
+        <li><span class="lvl">★</span> Read N and print the Fibonacci sequence of length N (lab 2a). Then modify it to print only the even terms.</li>
+        <li><span class="lvl">★★</span> Read a number and keep adding its digits until a single digit is left (e.g. 98765 → 35 → 8). Use only <code>while</code>, <code>//</code> and <code>%</code>.</li>
+        <li><span class="lvl">★★</span> Print all prime numbers between 1 and N using nested loops and <code>break</code>. Count how many divisions your program does for N = 1000, then make it faster by checking divisors only up to √n.</li>
+        <li><span class="lvl">★★</span> Print this pattern for n = 4 using nested loops (the inner loop prints numbers, not a fixed string):
+          <div class="code" style="margin-top:6px"><pre>      1
+    1 2 1
+  1 2 3 2 1
+1 2 3 4 3 2 1</pre></div></li>
+        <li><span class="lvl">★★</span> Find all 3-digit Armstrong numbers (sum of cubes of digits equals the number, e.g. 153 = 1³+5³+3³).</li>
+        <li><span class="lvl">★★★</span> Which starting number below 1000 produces the longest Collatz sequence? Print the number and the length. (Modify <code>seq3np1</code> to count steps instead of printing.)</li>
+        <li><span class="lvl">★★★</span> Find all perfect numbers below 10 000 (a number equal to the sum of its proper divisors, e.g. 28 = 1+2+4+7+14).
+          <details><summary>hint</summary><p>Divisors come in pairs (d, n//d). Loop d only up to √n and add both, so you don't run 10 000 × 10 000 steps.</p></details></li>
+        <li><span class="lvl">★★★</span> Given <code>marks = [("Asha", [78, 91, 66]), ("Ravi", [45, 38, 72]), ("Meena", [88, 95, 90])]</code>, print each student's total and average, and the names of students who failed any subject (&lt; 40). Use paired-data unpacking and a nested loop.</li>
+      </ol>
+    </div>
+<div class="quiz" id="q13"><span class="tag">✔ Check Your Understanding 1.3</span>
+<div class="qpart"><h5>A. True or False</h5><ol class="tf">
+<li><span><code>range(1, 5)</code> includes 5.</span><span class="tfbox">T / F</span></li>
+<li><span><code>continue</code> ends the loop completely.</span><span class="tfbox">T / F</span></li>
+<li><span>The body of a <code>while</code> loop may never run at all.</span><span class="tfbox">T / F</span></li>
+<li><span>In nested loops, the inner loop finishes completely for each step of the outer loop.</span><span class="tfbox">T / F</span></li>
+<li><span>A <code>for</code> loop can only be used with <code>range()</code>.</span><span class="tfbox">T / F</span></li>
+<li><span><code>while True:</code> without a <code>break</code> creates an infinite loop.</span><span class="tfbox">T / F</span></li>
+</ol></div>
+<div class="qpart"><h5>B. Fill in the blanks</h5><ol>
+<li><code>list(range(10, 0, -3))</code> is <span class="blank"></span>.</li>
+<li>A loop whose condition never becomes False is called an <span class="blank"></span> loop.</li>
+<li>The <span class="blank"></span> statement exits a loop immediately.</li>
+<li>In the Collatz sequence, if n is odd the next term is <span class="blank"></span>.</li>
+<li>Inside a string, <code>\t</code> prints a <span class="blank"></span> character.</li>
+</ol></div>
+<div class="qpart"><h5>C. Match the following</h5><div class="tbl"><table class="match"><tr><th>Column A</th><th>Column B</th></tr>
+<tr><td>1. <code>range(5)</code></td><td>p. 0 4 8</td></tr>
+<tr><td>2. <code>range(2, 6)</code></td><td>q. nothing (empty)</td></tr>
+<tr><td>3. <code>range(0, 10, 4)</code></td><td>r. 0 1 2 3 4</td></tr>
+<tr><td>4. <code>range(5, 0, -2)</code></td><td>s. 5 3 1</td></tr>
+<tr><td>5. <code>range(3, 3)</code></td><td>t. 2 3 4 5</td></tr>
+</table></div></div>
+<div class="qpart"><h5>D. Debug the code</h5><p>This program should print the sum of even numbers from 1 to N. Find <b>five</b> bugs.</p><div class="code"><pre>n = int(input("N: "))
+i = 1
+while i &lt; n
+    if i % 2 = 0:
+        total += i
+print("Sum:", total)</pre></div></div>
+<div class="qpart"><h5>E. Fill in the missing code</h5><p>Complete the code to print this pattern:</p><div class="code"><pre># *
+# **
+# ***
+# ****
+# *****
+for i in range(1, <span class="gap">____</span>):
+    for j in range(<span class="gap">____</span>):
+        print("*", end="")
+    <span class="gap">____</span></pre></div></div>
+<div class="qpart"><h5>F. Predict the output</h5><p>Write the output in your notebook <b>before</b> running it.</p><div class="code"><pre>for i in range(1, 10):
+    if i % 3 == 0:
+        continue
+    if i == 8:
+        break
+    print(i, end=" ")</pre></div></div>
+<div class="qpart"><h5>G. Creative activity</h5><div class="act-wrap">
+<div class="note act"><span class="tag">Human Collatz chain</span>Line up students. The first holds a card with 7. Each student computes the next Collatz term and passes a new card on. The class counts the steps to reach 1 and checks the answer with <code>seq3np1(7)</code>. Then try 27 in groups. What do you notice?</div>
+<div class="note act"><span class="tag">Trace-table race</span>In teams, fill a trace table (columns: i, condition, output) for the debugged even-sum program with N = 7. The first team with a fully correct table wins. Then explain in one sentence why a trace table is a debugging tool.</div>
+</div></div>
+<details class="key"><summary>Answer key (try first!)</summary><div class="keybody">
+<p><b>A.</b> 1-F · 2-F · 3-T · 4-T · 5-F · 6-T</p>
+<p><b>B.</b> 1) <code>[10, 7, 4, 1]</code> · 2) infinite · 3) <code>break</code> · 4) 3n + 1 · 5) tab</p>
+<p><b>C.</b> 1-r · 2-t · 3-p · 4-s · 5-q</p>
+<p><b>D.</b> (1) missing <code>:</code> after the while condition. (2) <code>=</code> should be <code>==</code>. (3) <code>total</code> is never initialised → add <code>total = 0</code>. (4) <code>i</code> is never increased → infinite loop; add <code>i += 1</code> inside the loop. (5) <code>i &lt; n</code> skips N itself → use <code>i &lt;= n</code>.</p>
+<p><b>E.</b> <code>6</code>, <code>i</code>, <code>print()</code></p>
+<p><b>F.</b> <code>1 2 4 5 7</code> (3 and 6 are skipped, the loop stops at 8)</p>
+</div></details></div>
+  </section>
+
+  <!-- 1.4 -->
+  <section class="topic" id="m1-func">
+    <h3>1.4 Functions with Arguments and Return Values</h3>
+    <p>A <span class="hl">function is a named sequence of statements that performs a task</span>. You define it once and call it many times.</p>
+    <div class="code"><pre><span class="k">def</span> area_of_circle(radius):      <span class="c"># header: def NAME(PARAMETERS):</span>
+    <span class="s">"""Return the area of a circle."""</span>   <span class="c"># docstring</span>
+    a = 3.14159 * radius ** 2
+    <span class="k">return</span> a                       <span class="c"># send the value back to the caller</span>
+
+r = 5
+print(area_of_circle(r))            <span class="c"># call with argument r</span>
+big = area_of_circle(10) + area_of_circle(2)</pre><pre class="out">78.53975</pre></div>
+    <div class="two">
+      <div class="note def"><span class="tag">Parameter</span>The <b>variable name</b> in the function header (<code>radius</code>). It receives a value.</div>
+      <div class="note def"><span class="tag">Argument</span>The <b>actual value</b> you pass when calling (<code>r</code>, <code>10</code>, <code>2</code>).</div>
+    </div>
+
+    <h4>Why use functions?</h4>
+    <ul>
+      <li>Give a name to a group of statements, so the program is easier to read.</li>
+      <li><span class="hg">Write once, reuse many times</span>. If there is a bug, fix it in one place.</li>
+      <li>Break a long program into small parts you can test one at a time.</li>
+    </ul>
+
+    <h4>Return values</h4>
+    <ul>
+      <li><code>return</code> <span class="hl">ends the function immediately</span> and sends a value back to where it was called.</li>
+      <li>A function with no <code>return</code> (or a bare <code>return</code>) returns the special value <code>None</code>.</li>
+      <li>A function can have several <code>return</code> statements, but only one runs per call.</li>
+      <li>Functions that return values are called <span class="hl">fruitful functions</span>. Those that only do something (like print) are <b>void</b> functions.</li>
+    </ul>
+    <div class="code"><pre><span class="k">def</span> absolute(x):
+    <span class="k">if</span> x &lt; 0:
+        <span class="k">return</span> -x
+    <span class="k">return</span> x
+
+<span class="k">def</span> show_abs(x):
+    print(abs(x))        <span class="c"># prints, returns nothing</span>
+
+a = absolute(-7)         <span class="c"># a is 7</span>
+b = show_abs(-7)         <span class="c"># prints 7, but b is None!</span>
+print(b + 1)             <span class="c"># TypeError: unsupported operand 'NoneType' + 'int'</span></pre></div>
+    <div class="note trap"><span class="tag">Trap: print vs return</span><span class="hp">print() shows a value on the screen. return hands the value back to the program.</span> If you want to use the result in another calculation, the function must <code>return</code> it. In labs, most bugs of the form "I got None" come from this.</div>
+
+    <h4>Local variables and flow of execution</h4>
+    <p>Variables created inside a function (including its parameters) are <span class="hl">local</span>: they exist only while the function runs and can't be seen outside. When a function is called, the flow jumps into the body, runs it, and comes back to the line after the call.</p>
+
+    <h4>Incremental development (example)</h4>
+    <p>Write a function for the distance between two points (x1, y1) and (x2, y2). <span class="hg">Build it in small steps and test each step.</span></p>
+    <div class="code"><pre><span class="k">def</span> distance(x1, y1, x2, y2):
+    dx = x2 - x1
+    dy = y2 - y1
+    <span class="c"># print("dx, dy:", dx, dy)   ← scaffolding while testing; remove later</span>
+    dsquared = dx**2 + dy**2
+    <span class="k">return</span> dsquared ** 0.5
+
+print(distance(1, 2, 4, 6))     <span class="c"># 3-4-5 triangle → expect 5.0</span></pre><pre class="out">5.0</pre></div>
+
+    <div class="ex"><span class="tag">✎ Exercises 1.4</span>
+      <ol>
+        <li><span class="lvl">★</span> Write <code>is_even(n)</code> that returns True/False (not print). Use it to count even numbers from a list of 10 numbers you read.</li>
+        <li><span class="lvl">★</span> Write <code>senior_citizen(birth_year, current_year)</code> returning True if age ≥ 60 (lab 1b). Test it with boundary cases: exactly 60, 59, 61.</li>
+        <li><span class="lvl">★★</span> Write <code>is_prime(n)</code>. Use it to print all twin primes below 200 (pairs like (11, 13) that differ by 2).</li>
+        <li><span class="lvl">★★</span> Write <code>gcd(a, b)</code> using Euclid's algorithm with a while loop (<code>a, b = b, a % b</code>), and <code>lcm(a, b)</code> that <b>calls</b> <code>gcd</code>.</li>
+        <li><span class="lvl">★★</span> Write <code>power(x, n)</code> without using <code>**</code> or <code>pow()</code>. It must work for negative n (2, −3 → 0.125) and n = 0.</li>
+        <li><span class="lvl">★★★</span> Write <code>reverse_number(n)</code> and <code>is_palindrome(n)</code> (which calls the first). Then find the smallest palindrome greater than a number the user enters.</li>
+        <li><span class="lvl">★★★</span> Write <code>calculator(a, b, choice)</code> for lab 1a that <b>returns</b> the result (1-Add, 2-Subtract, 3-Multiply, 4-Divide). The main program keeps showing the menu until the user picks 5 (Exit), and must not crash on divide by zero.</li>
+      </ol>
+    </div>
+<div class="quiz" id="q14"><span class="tag">✔ Check Your Understanding 1.4</span>
+<div class="qpart"><h5>A. True or False</h5><ol class="tf">
+<li><span>A function without a <code>return</code> statement returns 0.</span><span class="tfbox">T / F</span></li>
+<li><span>Parameters are local variables of the function.</span><span class="tfbox">T / F</span></li>
+<li><span>A function can contain more than one <code>return</code> statement.</span><span class="tfbox">T / F</span></li>
+<li><span>Statements after <code>return</code> in the same block still run.</span><span class="tfbox">T / F</span></li>
+<li><span>A function must be defined before the line that calls it runs.</span><span class="tfbox">T / F</span></li>
+</ol></div>
+<div class="qpart"><h5>B. Fill in the blanks</h5><ol>
+<li>The keyword used to define a function is <span class="blank"></span>.</li>
+<li>Values passed to a function when calling it are called <span class="blank"></span>.</li>
+<li>A function that returns a value is called a <span class="blank"></span> function.</li>
+<li>The string written just below the function header to describe it is the <span class="blank"></span>.</li>
+<li>Variables created inside a function are <span class="blank"></span> to that function.</li>
+</ol></div>
+<div class="qpart"><h5>C. Match the following</h5><div class="tbl"><table class="match"><tr><th>Column A</th><th>Column B</th></tr>
+<tr><td>1. <code>def</code></td><td>p. sends a value back to the caller</td></tr>
+<tr><td>2. <code>return</code></td><td>q. actual value passed during a call</td></tr>
+<tr><td>3. <code>None</code></td><td>r. starts a function definition</td></tr>
+<tr><td>4. parameter</td><td>s. result of a function with no return</td></tr>
+<tr><td>5. argument</td><td>t. name written in the function header</td></tr>
+</table></div></div>
+<div class="qpart"><h5>D. Debug the code</h5><p>The program should print <code>Sum of squares: 25</code>. Find <b>three</b> bugs.</p><div class="code"><pre>def square(x)
+    result = x * x
+    print(result)
+
+total = square(3) + square(4)
+print("Sum of squares:", totl)</pre></div></div>
+<div class="qpart"><h5>E. Fill in the missing code</h5><p>Complete the function that returns the largest of three numbers (without using <code>max</code>).</p><div class="code"><pre>def max_of_three(a, b, c):
+    largest = a
+    if <span class="gap">____</span> &gt; largest:
+        largest = b
+    if c &gt; <span class="gap">____</span>:
+        largest = c
+    <span class="gap">____</span> largest
+
+print(max_of_three(4, 9, 2))   # 9</pre></div></div>
+<div class="qpart"><h5>F. Predict the output</h5><p>Write the output in your notebook <b>before</b> running it.</p><div class="code"><pre>def f(x):
+    x = x + 10
+    return x * 2
+
+x = 5
+print(f(x), x)</pre></div></div>
+<div class="qpart"><h5>G. Creative activity</h5><div class="act-wrap">
+<div class="note act"><span class="tag">Function vending machine</span>Draw a function as a vending machine: coin slot = parameters, machine = body, tray = return value. Then invent 3 everyday functions (e.g. <code>chai_bill(cups, with_snacks)</code>, <code>bus_fare(km)</code>, <code>grade(marks)</code>), draw each as a machine, and finally write the Python.</div>
+<div class="note act"><span class="tag">Name it and document it</span>The teacher shows a function with a bad name like <code>def x(a, b): return a * b / 2</code>. Students suggest a meaningful name, parameter names and a one-line docstring. The class votes for the clearest version.</div>
+</div></div>
+<details class="key"><summary>Answer key (try first!)</summary><div class="keybody">
+<p><b>A.</b> 1-F (None) · 2-T · 3-T · 4-F · 5-T</p>
+<p><b>B.</b> 1) <code>def</code> · 2) arguments · 3) fruitful · 4) docstring · 5) local</p>
+<p><b>C.</b> 1-r · 2-p · 3-s · 4-t · 5-q</p>
+<p><b>D.</b> (1) missing <code>:</code> after <code>def square(x)</code>. (2) <code>print(result)</code> should be <code>return result</code>, otherwise <code>None + None</code> → TypeError. (3) typo <code>totl</code> → NameError; use <code>total</code>.</p>
+<p><b>E.</b> <code>b</code>, <code>largest</code>, <code>return</code></p>
+<p><b>F.</b> <code>30 5</code> (the x inside f is local; the outer x is unchanged)</p>
+</div></details></div>
+  </section>
+
+  <!-- Scenarios M1 -->
+  <section class="topic" id="m1-scen">
+    <h3>Think &amp; Apply — Module 1 Scenarios</h3>
+    <p>Each scenario is a small real-life problem. First write the steps in plain English (algorithm), <span class="hg">then</span> write the code. Decide which loop fits and why.</p>
+    <div class="scen-wrap">
+      <div class="scen">
+        <h4>1. College canteen billing</h4>
+        <p>The canteen menu: 1-Idli ₹30, 2-Dosa ₹50, 3-Tea ₹15, 4-Juice ₹40. The cashier enters item code and quantity again and again until code 0. Print an itemised bill, add 5% GST, and give 10% discount if the bill (before GST) is above ₹300. If an invalid code is typed, show a message and continue.</p>
+        <p class="uses">uses: while True + break, continue, if/elif, arithmetic, formatted output</p>
+      </div>
+      <div class="scen">
+        <h4>2. ATM cash dispenser</h4>
+        <p>An ATM has only ₹500, ₹200 and ₹100 notes. A customer requests an amount. If it is not a multiple of 100, reject it. Otherwise dispense the <b>minimum number of notes</b> and print how many of each. Extend: the ATM has only 10 notes of ₹500 left. What changes?</p>
+        <p class="uses">uses: // and %, conditions, thinking about limits</p>
+      </div>
+      <div class="scen">
+        <h4>3. Electricity bill with slabs</h4>
+        <p>A power company charges: first 100 units ₹4.00/unit, next 100 units ₹5.50/unit, everything above 200 units ₹7.00/unit, plus a fixed charge of ₹100. Read units for 6 houses in a street and print each bill, then the house with the highest bill and the street's total.</p>
+        <p class="uses">uses: for loop, slab logic with if/elif, tracking a maximum, a fruitful function bill(units)</p>
+      </div>
+      <div class="scen">
+        <h4>4. Water tank simulation</h4>
+        <p>A 1000-litre tank is empty. A motor fills 25 L/minute, but a leak loses 3 L/minute. Using a <code>while</code> loop that runs minute by minute, find (a) when the tank is half full, (b) when it is full. Then check your answer with a formula. Which is easier to change if the leak gets worse over time?</p>
+        <p class="uses">uses: while, updating variables, comparing simulation vs formula</p>
+      </div>
+      <div class="scen">
+        <h4>5. Login with 3 attempts</h4>
+        <p>The lab's computer login has PIN 4729. The user gets 3 attempts. On success print "Welcome", on failure print attempts left. After 3 wrong attempts print "Account locked". Write it once with <code>for</code> + <code>break</code>, and once with <code>while</code>. Which reads better?</p>
+        <p class="uses">uses: for/while, break, for-else (look it up!)</p>
+      </div>
+      <div class="scen">
+        <h4>6. Bug hunt: the average that lies</h4>
+        <p>Your junior wrote this and says "the average of 90, 80, 70 comes out wrong":</p>
+        <div class="code"><pre>m1 = input(<span class="s">"m1: "</span>); m2 = input(<span class="s">"m2: "</span>); m3 = input(<span class="s">"m3: "</span>)
+avg = m1 + m2 + m3 / 3
+print(<span class="s">"Average is "</span> + avg)</pre></div>
+        <p>List every bug, say whether it is syntax, runtime or semantic, and explain in which order Python will report them. Then write the corrected program.</p>
+        <p class="uses">uses: error types, input() returns str, precedence, str + number</p>
+      </div>
+      <div class="scen">
+        <h4>7. Auto-rickshaw fare meter</h4>
+        <p>Minimum fare ₹30 covers the first 2 km. After that ₹15 per km. Waiting charge ₹1 per minute after the first 5 free minutes. Night ride (10 PM to 5 AM) costs 1.5×. Read distance, waiting minutes and the 24-hour time of the ride, and print the fare. Write separate functions for distance fare, waiting fare and night check.</p>
+        <p class="uses">uses: functions with return values, composition, conditions with and/or, % for clock</p>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ======================= MODULE 2 ======================= -->
+<section class="module" id="m2">
+  <h2>Module 2 — Strings, Tuples &amp; Lists</h2>
+  <p class="meta">8 hours</p>
+
+  <!-- 2.1 Strings -->
+  <section class="topic" id="m2-str">
+    <h3>2.1 Strings</h3>
+    <p>A string is a <span class="hl">compound data type</span>: an ordered <b>sequence of characters</b>. We can treat it as one thing, or look at its individual parts.</p>
+
+    <h4>Working with strings as single things</h4>
+    <p>A string is an <b>object</b> with built-in <span class="hl">methods</span>: functions attached to it, called with the <b>dot</b> notation.</p>
+    <div class="code"><pre>ss = <span class="s">"Hello, World!"</span>
+print(ss.upper())      <span class="c"># HELLO, WORLD!</span>
+print(ss.lower())      <span class="c"># hello, world!</span>
+print(ss.swapcase())   <span class="c"># hELLO, wORLD!</span>
+print(ss)              <span class="c"># Hello, World!  ← the original is unchanged</span></pre></div>
+
+    <h4>Working with the parts of a string (indexing)</h4>
+    <p>The <span class="hl">indexing operator <code>[ ]</code></span> picks one character. <span class="hg">Indexes start at 0.</span> Negative indexes count from the end.</p>
+    <div class="boxchars" aria-label="Index diagram for the string PYTHON">
+      <span><b>P</b><i>0</i><i>-6</i></span><span><b>Y</b><i>1</i><i>-5</i></span><span><b>T</b><i>2</i><i>-4</i></span><span><b>H</b><i>3</i><i>-3</i></span><span><b>O</b><i>4</i><i>-2</i></span><span><b>N</b><i>5</i><i>-1</i></span>
+    </div>
+    <p><code>s = "PYTHON"</code> → <code>s[0]</code> is <code>'P'</code>, <code>s[5]</code> is <code>'N'</code>, <code>s[-1]</code> is <code>'N'</code>, <code>s[-6]</code> is <code>'P'</code>.</p>
+
+    <h4>Length</h4>
+    <p><code>len(s)</code> returns the number of characters. <span class="hp">The last index is <code>len(s) - 1</code>, not <code>len(s)</code></span>. So <code>s[len(s)]</code> gives <code>IndexError: string index out of range</code>. Safe options: <code>s[len(s)-1]</code> or simply <code>s[-1]</code>.</p>
+
+    <h4>Traversal and the for loop</h4>
+    <p><span class="hl">Traversal</span> = visiting each character one by one, from start to end.</p>
+    <div class="code"><pre><span class="c"># way 1: while loop with index</span>
+ix = 0
+<span class="k">while</span> ix &lt; len(fruit):
+    print(fruit[ix])
+    ix += 1
+
+<span class="c"># way 2: for loop (cleaner, preferred)</span>
+<span class="k">for</span> ch <span class="k">in</span> fruit:
+    print(ch)</pre></div>
+    <p>Use the index version only when you need the position too (or use <code>for i, ch in enumerate(fruit)</code>).</p>
+
+    <h4>Slices</h4>
+    <p>A <span class="hl">slice</span> <code>s[m:n]</code> is a substring from index m <b>up to but not including</b> n. Optional third value is the step: <code>s[m:n:k]</code>.</p>
+    <div class="tbl"><table>
+      <tr><th>s = "Python"</th><th>Result</th><th>Meaning</th></tr>
+      <tr><td><code>s[1:4]</code></td><td><code>'yth'</code></td><td>index 1, 2, 3</td></tr>
+      <tr><td><code>s[:3]</code></td><td><code>'Pyt'</code></td><td>from start</td></tr>
+      <tr><td><code>s[3:]</code></td><td><code>'hon'</code></td><td>till end</td></tr>
+      <tr><td><code>s[-3:]</code></td><td><code>'hon'</code></td><td>last 3 chars</td></tr>
+      <tr><td><code>s[::2]</code></td><td><code>'Pto'</code></td><td>every 2nd char</td></tr>
+      <tr><td><code>s[::-1]</code></td><td><code>'nohtyP'</code></td><td><span class="hb">reverse a string</span></td></tr>
+      <tr><td><code>s[2:100]</code></td><td><code>'thon'</code></td><td><span class="hg">slices never give IndexError</span></td></tr>
+      <tr><td><code>s[4:2]</code></td><td><code>''</code></td><td>empty string</td></tr>
+    </table></div>
+
+    <h4>String comparison</h4>
+    <p><code>==</code> checks equality. <code>&lt;</code> and <code>&gt;</code> compare <span class="hl">lexicographically</span> (dictionary order), character by character, using each character's <b>Unicode number</b>.</p>
+    <div class="code"><pre><span class="s">"apple"</span> &lt; <span class="s">"apricot"</span>   <span class="c"># True  ('p' &lt; 'r' at index 2)</span>
+<span class="s">"Zebra"</span> &lt; <span class="s">"apple"</span>     <span class="c"># True! uppercase letters come before lowercase</span>
+ord(<span class="s">"A"</span>), ord(<span class="s">"a"</span>)      <span class="c"># (65, 97)   chr(66) → 'B'</span></pre></div>
+    <div class="note trap"><span class="tag">Trap</span><span class="hp">All uppercase letters (65–90) come before all lowercase (97–122)</span>. To sort or compare words fairly, convert both to the same case first: <code>a.lower() &lt; b.lower()</code>.</div>
+
+    <h4>Strings are immutable</h4>
+    <p><span class="hl">Immutable means it cannot be changed after creation.</span> You cannot change a character in place. Create a new string instead.</p>
+    <div class="code"><pre>greeting = <span class="s">"Hello"</span>
+greeting[0] = <span class="s">"J"</span>             <span class="c"># TypeError: 'str' object does not support item assignment</span>
+greeting = <span class="s">"J"</span> + greeting[1:]  <span class="c"># 'Jello'  ← new string, name re-bound</span></pre></div>
+
+    <h4>The <code>in</code> and <code>not in</code> operators</h4>
+    <div class="code"><pre><span class="s">"p"</span> <span class="k">in</span> <span class="s">"apple"</span>        <span class="c"># True</span>
+<span class="s">"pp"</span> <span class="k">in</span> <span class="s">"apple"</span>       <span class="c"># True  (substring test)</span>
+<span class="s">"x"</span> <span class="k">not in</span> <span class="s">"apple"</span>    <span class="c"># True</span>
+<span class="s">""</span> <span class="k">in</span> <span class="s">"apple"</span>         <span class="c"># True  (empty string is in every string)</span></pre></div>
+    <p>Neat use: remove vowels from a string.</p>
+    <div class="code"><pre><span class="k">def</span> remove_vowels(phrase):
+    result = <span class="s">""</span>
+    <span class="k">for</span> ch <span class="k">in</span> phrase:
+        <span class="k">if</span> ch.lower() <span class="k">not in</span> <span class="s">"aeiou"</span>:
+            result += ch
+    <span class="k">return</span> result
+
+print(remove_vowels(<span class="s">"Programming in Python"</span>))</pre><pre class="out">Prgrmmng n Pythn</pre></div>
+
+    <h4>A <code>find</code> function (write your own)</h4>
+    <p>This shows the <span class="hb">"eureka traversal"</span> pattern: stop as soon as you find what you're looking for.</p>
+    <div class="code"><pre><span class="k">def</span> find(strng, ch):
+    <span class="s">"""Return the index of the first ch in strng, or -1 if absent."""</span>
+    ix = 0
+    <span class="k">while</span> ix &lt; len(strng):
+        <span class="k">if</span> strng[ix] == ch:
+            <span class="k">return</span> ix        <span class="c"># eureka! exit early</span>
+        ix += 1
+    <span class="k">return</span> -1               <span class="c"># searched everything, not found</span>
+
+print(find(<span class="s">"Compsci"</span>, <span class="s">"p"</span>), find(<span class="s">"Compsci"</span>, <span class="s">"x"</span>))</pre><pre class="out">3 -1</pre></div>
+
+    <h4>Looping and counting</h4>
+    <div class="code"><pre><span class="k">def</span> count_a(text):
+    count = 0                  <span class="c"># counter pattern: init → loop → update</span>
+    <span class="k">for</span> c <span class="k">in</span> text:
+        <span class="k">if</span> c == <span class="s">"a"</span>:
+            count += 1
+    <span class="k">return</span> count
+
+print(count_a(<span class="s">"banana"</span>))      <span class="c"># 3</span></pre></div>
+
+    <h4>Optional parameters</h4>
+    <p>A parameter can have a <span class="hl">default value</span>. If the caller doesn't pass that argument, the default is used. <span class="hg">Parameters with defaults must come after those without.</span></p>
+    <div class="code"><pre><span class="k">def</span> find(strng, ch, start=0, end=None):
+    ix = start
+    <span class="k">if</span> end <span class="k">is</span> None:
+        end = len(strng)
+    <span class="k">while</span> ix &lt; end:
+        <span class="k">if</span> strng[ix] == ch:
+            <span class="k">return</span> ix
+        ix += 1
+    <span class="k">return</span> -1
+
+ss = <span class="s">"Python strings have some interesting methods."</span>
+find(ss, <span class="s">"s"</span>)          <span class="c"># 7</span>
+find(ss, <span class="s">"s"</span>, 7)       <span class="c"># 7</span>
+find(ss, <span class="s">"s"</span>, 8)       <span class="c"># 13</span>
+find(ss, <span class="s">"s"</span>, 8, 13)   <span class="c"># -1</span></pre></div>
+
+    <h4>The built-in find method (and friends)</h4>
+    <p>Python already has <code>str.find(sub, start, end)</code>, which works with whole substrings too.</p>
+    <div class="tbl"><table>
+      <tr><th>Method</th><th>Example</th><th>Result</th></tr>
+      <tr><td><code>find(sub)</code></td><td><code>"banana".find("na")</code></td><td><code>2</code> (−1 if absent)</td></tr>
+      <tr><td><code>find(sub, start)</code></td><td><code>"banana".find("na", 3)</code></td><td><code>4</code></td></tr>
+      <tr><td><code>index(sub)</code></td><td><code>"banana".index("x")</code></td><td><span class="hp">ValueError</span> (find returns −1)</td></tr>
+      <tr><td><code>count(sub)</code></td><td><code>"banana".count("a")</code></td><td><code>3</code></td></tr>
+      <tr><td><code>replace(old, new)</code></td><td><code>"banana".replace("a", "o")</code></td><td><code>'bonono'</code></td></tr>
+      <tr><td><code>startswith / endswith</code></td><td><code>"report.pdf".endswith(".pdf")</code></td><td><code>True</code></td></tr>
+      <tr><td><code>isdigit / isalpha / isalnum</code></td><td><code>"2026".isdigit()</code></td><td><code>True</code></td></tr>
+      <tr><td><code>isupper / islower / isspace</code></td><td><code>"ABC".isupper()</code></td><td><code>True</code></td></tr>
+      <tr><td><code>title / capitalize</code></td><td><code>"ram kumar".title()</code></td><td><code>'Ram Kumar'</code></td></tr>
+    </table></div>
+    <div class="note exam"><span class="tag">Exam point</span><span class="hb">String methods never change the original string</span> (strings are immutable). They <b>return a new string</b>. So write <code>s = s.upper()</code>, not just <code>s.upper()</code>.</div>
+
+    <h4>The split method</h4>
+    <p><code>split()</code> <span class="hl">breaks a string into a list of words</span>. With no argument it splits on any whitespace. With an argument it splits on that separator. Its partner <code>join()</code> glues a list back into a string.</p>
+    <div class="code"><pre><span class="s">"Well I never did say"</span>.split()     <span class="c"># ['Well', 'I', 'never', 'did', 'say']</span>
+<span class="s">"a,b,,c"</span>.split(<span class="s">","</span>)               <span class="c"># ['a', 'b', '', 'c']</span>
+<span class="s">"-"</span>.join([<span class="s">"2026"</span>, <span class="s">"11"</span>, <span class="s">"02"</span>])     <span class="c"># '2026-11-02'</span></pre></div>
+
+    <h4>Cleaning up your strings</h4>
+    <p>Real text has capital letters and punctuation that get in the way of counting words. Clean it first:</p>
+    <div class="code"><pre><span class="k">import</span> string
+
+<span class="k">def</span> remove_punctuation(s):
+    clean = <span class="s">""</span>
+    <span class="k">for</span> ch <span class="k">in</span> s:
+        <span class="k">if</span> ch <span class="k">not in</span> string.punctuation:
+            clean += ch
+    <span class="k">return</span> clean
+
+text = <span class="s">"  Hello!! Is this... Python? Yes, Python.  "</span>
+words = remove_punctuation(text).strip().lower().split()
+print(words)</pre><pre class="out">['hello', 'is', 'this', 'python', 'yes', 'python']</pre></div>
+    <p><code>strip()</code> removes spaces at both ends (<code>lstrip</code>/<code>rstrip</code> for one side). Notice the <span class="hg">method chaining</span>: each method returns a string, so you can call the next method on it.</p>
+
+    <h4>The string format method</h4>
+    <p><code>format()</code> fills <b>placeholders</b> <code>{ }</code> inside a template string. Format specs after a colon control width, alignment and decimals.</p>
+    <div class="code"><pre>n1, n2 = 4, 5
+print(<span class="s">"{0} x {1} = {2}"</span>.format(n1, n2, n1*n2))
+print(<span class="s">"|{0:&lt;8}|{1:^8}|{2:&gt;8}|"</span>.format(<span class="s">"left"</span>, <span class="s">"mid"</span>, <span class="s">"right"</span>))
+print(<span class="s">"Pi to 3 places: {0:.3f}"</span>.format(3.14159265))
+print(<span class="s">"{name} scored {m:5.1f}%"</span>.format(name=<span class="s">"Asha"</span>, m=87.456))
+print(f<span class="s">"{n1} + {n2} = {n1+n2}"</span>)      <span class="c"># f-string: modern shortcut</span></pre><pre class="out">4 x 5 = 20
+|left    |  mid   |   right|
+Pi to 3 places: 3.142
+Asha scored  87.5%
+4 + 5 = 9</pre></div>
+    <div class="note rule"><span class="tag">Format spec quick guide</span><code>&lt;</code> left · <code>^</code> centre · <code>&gt;</code> right · <code>8</code> = width · <code>.2f</code> = 2 decimals · <code>,</code> = thousands separator (<code>"{:,}".format(1234567)</code> → <code>1,234,567</code>)</div>
+
+    <div class="ex"><span class="tag">✎ Exercises 2.1</span>
+      <ol>
+        <li><span class="lvl">★</span> Read a sentence and count vowels, consonants, digits, spaces and special characters separately.</li>
+        <li><span class="lvl">★</span> Read a multi-digit number <b>as a string</b> and print the frequency of each digit 0–9 that appears (lab 3b), without using a dictionary.</li>
+        <li><span class="lvl">★★</span> Check whether a phrase is a palindrome ignoring case, spaces and punctuation: <i>"Never odd or even"</i> and <i>"A man, a plan, a canal: Panama!"</i> must both say Yes.</li>
+        <li><span class="lvl">★★</span> Write <code>my_title(s)</code> that capitalises the first letter of every word <b>without</b> using <code>title()</code> or <code>capitalize()</code>.</li>
+        <li><span class="lvl">★★</span> Caesar cipher: write <code>encrypt(text, k)</code> and <code>decrypt(text, k)</code> that shift letters by k (wrapping z → a), keep case, and leave other characters unchanged. Use <code>ord</code>, <code>chr</code> and <code>%</code>.</li>
+        <li><span class="lvl">★★</span> Run-length compression: <code>"aaabccdddd"</code> → <code>"a3b1c2d4"</code>. Then write the decompressor. Does it still work if the input has digits?</li>
+        <li><span class="lvl">★★★</span> Write <code>count_sub(s, sub)</code> that counts <b>overlapping</b> occurrences (<code>"aaaa"</code>, <code>"aa"</code> → 3), using your own <code>find</code> with the <code>start</code> parameter. Compare with the built-in <code>count</code>. Why are the answers different?</li>
+        <li><span class="lvl">★★★</span> Check if two words are anagrams (<i>listen / silent</i>) without using <code>sorted()</code>. Hint: count each letter.</li>
+        <li><span class="lvl">★★★</span> Print a neat marks card for 5 subjects using <code>format()</code>: subject name left-aligned in 15 columns, marks right-aligned in 5, a total line, and percentage to 2 decimals.</li>
+      </ol>
+    </div>
+<div class="quiz" id="q21"><span class="tag">✔ Check Your Understanding 2.1</span>
+<div class="qpart"><h5>A. True or False</h5><ol class="tf">
+<li><span>Strings in Python are mutable.</span><span class="tfbox">T / F</span></li>
+<li><span><code>s[-1]</code> gives the last character of s.</span><span class="tfbox">T / F</span></li>
+<li><span><code>name.upper()</code> changes the string stored in <code>name</code>.</span><span class="tfbox">T / F</span></li>
+<li><span>A slice like <code>s[2:100]</code> raises IndexError if s is short.</span><span class="tfbox">T / F</span></li>
+<li><span><code>"Apple" &lt; "apple"</code> is True.</span><span class="tfbox">T / F</span></li>
+<li><span><code>find()</code> returns -1 when not found, but <code>index()</code> raises ValueError.</span><span class="tfbox">T / F</span></li>
+</ol></div>
+<div class="qpart"><h5>B. Fill in the blanks</h5><ol>
+<li><code>"Python"[2:5]</code> gives <span class="blank"></span>.</li>
+<li><code>len("Hi there")</code> gives <span class="blank"></span>.</li>
+<li><code>"banana".count("an")</code> gives <span class="blank"></span>.</li>
+<li><code>"a-b-c".split("-")</code> gives <span class="blank"></span>.</li>
+<li><code>ord("a")</code> gives <span class="blank"></span>.</li>
+<li><code>"{:&gt;6}".format("ab")</code> gives <span class="blank"></span>.</li>
+</ol></div>
+<div class="qpart"><h5>C. Match the following</h5><div class="tbl"><table class="match"><tr><th>Column A</th><th>Column B</th></tr>
+<tr><td>1. <code>strip()</code></td><td>p. swaps every occurrence of a substring</td></tr>
+<tr><td>2. <code>split()</code></td><td>q. True if every character is a digit</td></tr>
+<tr><td>3. <code>join()</code></td><td>r. removes spaces at both ends</td></tr>
+<tr><td>4. <code>replace()</code></td><td>s. gives the index of a substring, or -1</td></tr>
+<tr><td>5. <code>find()</code></td><td>t. breaks a string into a list of words</td></tr>
+<tr><td>6. <code>isdigit()</code></td><td>u. glues a list of strings into one string</td></tr>
+</table></div></div>
+<div class="qpart"><h5>D. Debug the code</h5><p>This function should count uppercase letters in a string. Find <b>three</b> bugs.</p><div class="code"><pre>def count_upper(s):
+    count = 0
+    for i in s:
+        if s[i].isupper:
+            count + 1
+    return count</pre></div></div>
+<div class="qpart"><h5>E. Fill in the missing code</h5><p>Complete the code to reverse each word but keep the word order.</p><div class="code"><pre>sentence = "I love Python"
+words = sentence.<span class="gap">____</span>()
+result = []
+for w in words:
+    result.append(w[<span class="gap">____</span>])
+print(" ".<span class="gap">____</span>(result))       # I evol nohtyP</pre></div></div>
+<div class="qpart"><h5>F. Predict the output</h5><p>Write the output in your notebook <b>before</b> running it.</p><div class="code"><pre>s = "Engineering"
+print(s[3:7], s[-3:], s[::3])
+print(s.find("e"), s.count("n"), s.upper()[0:3])</pre></div></div>
+<div class="qpart"><h5>G. Creative activity</h5><div class="act-wrap">
+<div class="note act"><span class="tag">Secret message relay</span>Each team writes a Caesar-cipher <code>encrypt</code> function with a secret shift, encodes a short message and hands it to another team with only a hint ("the shift is less than 6"). The receiving team must write <code>decrypt</code> and try shifts in a loop until the message makes sense.</div>
+<div class="note act"><span class="tag">Slice bingo</span>Each student draws a 3×3 bingo grid filled with substrings of the word <code>PROGRAMMING</code>. The teacher calls slices like <code>s[3:7]</code> or <code>s[::-2]</code>. Mark the square if your grid has the result. First full line shouts BINGO and must prove each answer.</div>
+</div></div>
+<details class="key"><summary>Answer key (try first!)</summary><div class="keybody">
+<p><b>A.</b> 1-F · 2-T · 3-F · 4-F · 5-T · 6-T</p>
+<p><b>B.</b> 1) <code>'tho'</code> · 2) 8 · 3) 2 · 4) <code>['a', 'b', 'c']</code> · 5) 97 · 6) <code>'    ab'</code> (4 spaces + ab)</p>
+<p><b>C.</b> 1-r · 2-t · 3-u · 4-p · 5-s · 6-q</p>
+<p><b>D.</b> (1) <code>i</code> is already a character, so <code>s[i]</code> → TypeError; use <code>i.isupper()</code>. (2) <code>isupper</code> is missing <code>()</code>, so the method object is always truthy. (3) <code>count + 1</code> doesn't store the result; use <code>count += 1</code>.</p>
+<p><b>E.</b> <code>split</code>, <code>::-1</code>, <code>join</code></p>
+<p><b>F.</b> <code>inee ing Eien</code> then <code>5 3 ENG</code></p>
+</div></details></div>
+  </section>
+
+  <!-- 2.2 Tuples -->
+  <section class="topic" id="m2-tup">
+    <h3>2.2 Tuples</h3>
+
+    <h4>Tuples are used for grouping data</h4>
+    <p>A <span class="hl">tuple is an ordered, immutable sequence of values</span>, written with commas (parentheses are usual but optional). It is perfect for a <b>record</b>: several related values about one thing.</p>
+    <div class="code"><pre>student = (<span class="s">"Asha Rao"</span>, <span class="s">"1XX24CS057"</span>, 2006, <span class="s">"CSE"</span>, 8.9)
+print(student[0], student[-1])    <span class="c"># Asha Rao 8.9</span>
+print(student[1:3])               <span class="c"># ('1XX24CS057', 2006)  ← slicing gives a tuple</span>
+print(len(student))               <span class="c"># 5</span>
+empty = ()
+single = (10,)                    <span class="c"># the comma makes it a tuple</span>
+not_tuple = (10)                  <span class="c"># this is just int 10!</span></pre></div>
+    <div class="note trap"><span class="tag">Trap</span><span class="hp">A one-element tuple needs a trailing comma: <code>(10,)</code></span>. And tuples are immutable: <code>student[2] = 2007</code> → <code>TypeError</code>. To "change" it, build a new tuple: <code>student = student[:2] + (2007,) + student[3:]</code></div>
+    <p>Tuple operations: <code>+</code> (join), <code>*</code> (repeat), <code>in</code>, <code>len</code>, indexing, slicing, <code>count(x)</code>, <code>index(x)</code>, and <code>min</code>/<code>max</code>/<code>sum</code> on numeric tuples.</p>
+
+    <h4>Tuple assignment</h4>
+    <p>A tuple of variables on the left can be assigned a tuple of values on the right <span class="hg">in one step</span>. This is called <span class="hl">unpacking</span>.</p>
+    <div class="code"><pre>(name, usn, year, branch, cgpa) = student   <span class="c"># unpack the record</span>
+a, b = b, a                                 <span class="c"># swap without temp!</span>
+x, y, z = 1, 2                              <span class="c"># ValueError: not enough values to unpack</span></pre></div>
+    <p>How the swap works: <span class="hb">the whole right side is evaluated first</span> into a tuple <code>(b, a)</code>, then it is unpacked into a and b. <span class="hg">Number of variables on the left must equal number of values on the right.</span></p>
+
+    <h4>Tuples as return values</h4>
+    <p>A function can return only one value, but that value can be a tuple, so <span class="hg">a function can effectively return many values</span>.</p>
+    <div class="code"><pre><span class="k">def</span> circle_stats(r):
+    <span class="s">"""Return (circumference, area) for a circle of radius r."""</span>
+    c = 2 * 3.14159 * r
+    a = 3.14159 * r * r
+    <span class="k">return</span> (c, a)
+
+circ, area = circle_stats(10)     <span class="c"># unpack the returned tuple</span>
+print(<span class="s">"{0:.2f} {1:.2f}"</span>.format(circ, area))
+
+<span class="k">def</span> min_max(nums):
+    <span class="k">return</span> min(nums), max(nums)   <span class="c"># parentheses optional</span></pre><pre class="out">62.83 314.16</pre></div>
+
+    <h4>Composability of data structures</h4>
+    <p>Data structures can be <span class="hl">nested inside each other</span> to any depth: tuples inside tuples, lists inside tuples, tuples inside lists. This lets us model real data.</p>
+    <div class="code"><pre>julia = (<span class="s">"Julia"</span>, <span class="s">"Roberts"</span>, (8, <span class="s">"October"</span>, 1967), <span class="s">"Actress"</span>,
+         [(<span class="s">"Pretty Woman"</span>, 1990), (<span class="s">"Notting Hill"</span>, 1999)])
+print(julia[2][2])          <span class="c"># 1967          (birth year)</span>
+print(julia[4][1][0])       <span class="c"># Notting Hill  (2nd movie's title)</span>
+julia[4].append((<span class="s">"Wonder"</span>, 2017))   <span class="c"># allowed! the list inside is mutable</span></pre></div>
+    <div class="note exam"><span class="tag">Exam point: tuple vs list</span>
+      <div class="tbl"><table>
+        <tr><th>Tuple</th><th>List</th></tr>
+        <tr><td><code>( )</code> · immutable</td><td><code>[ ]</code> · mutable</td></tr>
+        <tr><td>fixed record of <b>different</b> kinds of values (name, year, marks)</td><td>collection of <b>similar</b> items that grows/shrinks</td></tr>
+        <tr><td>can be a dictionary key</td><td>cannot be a dictionary key</td></tr>
+        <tr><td>slightly faster, safer (can't be changed by mistake)</td><td>many methods: append, sort, pop…</td></tr>
+      </table></div>
+    </div>
+
+    <div class="ex"><span class="tag">✎ Exercises 2.2</span>
+      <ol>
+        <li><span class="lvl">★</span> Rotate three variables a → b → c → a in a single line using tuple assignment. Predict the result for a, b, c = 1, 2, 3 before running.</li>
+        <li><span class="lvl">★</span> Write <code>stats(nums)</code> that returns the tuple (count, sum, mean). Call it and unpack the result.</li>
+        <li><span class="lvl">★★</span> Dates are stored as tuples <code>(year, month, day)</code>. Read two dates and print which is earlier, using <b>one</b> comparison <code>d1 &lt; d2</code>. Explain why this works (tuples compare element by element). Why would <code>(day, month, year)</code> fail?</li>
+        <li><span class="lvl">★★</span> Points are tuples <code>(x, y)</code>. Write <code>midpoint(p, q)</code> and <code>distance(p, q)</code>. Given a list of 6 points, find the pair that is closest together.</li>
+        <li><span class="lvl">★★★</span> Given <code>records = [("Asha", 78), ("Ravi", 91), ("Meena", 91), ("John", 64)]</code>, print the topper(s) (handle ties!) and print the list ranked by marks, highest first, using your own bubble sort that swaps tuples (as in lab 5).</li>
+        <li><span class="lvl">★★★</span> Predict the output and explain each line:
+          <div class="code" style="margin-top:6px"><pre>t = (1, [2, 3], 4)
+t[1].append(5)
+print(t)
+t[1] = [9]</pre></div></li>
+      </ol>
+    </div>
+<div class="quiz" id="q22"><span class="tag">✔ Check Your Understanding 2.2</span>
+<div class="qpart"><h5>A. True or False</h5><ol class="tf">
+<li><span><code>(5)</code> is a tuple with one element.</span><span class="tfbox">T / F</span></li>
+<li><span>A tuple can contain a list.</span><span class="tfbox">T / F</span></li>
+<li><span>A function can return several values packed in a tuple.</span><span class="tfbox">T / F</span></li>
+<li><span><code>t = (1, 2, 3); t[0] = 9</code> works.</span><span class="tfbox">T / F</span></li>
+<li><span><code>(1, 2, 3) &lt; (1, 3)</code> is True.</span><span class="tfbox">T / F</span></li>
+</ol></div>
+<div class="qpart"><h5>B. Fill in the blanks</h5><ol>
+<li>A one-element tuple containing 7 is written <span class="blank"></span>.</li>
+<li>After <code>a, b = 3, 4</code> and <code>a, b = b, a</code>, the value of a is <span class="blank"></span>.</li>
+<li><code>len(((1, 2), (3, 4, 5)))</code> is <span class="blank"></span>.</li>
+<li><code>(1, 2) * 2</code> gives <span class="blank"></span>.</li>
+<li>Assigning the values of a tuple to several variables at once is called <span class="blank"></span>.</li>
+</ol></div>
+<div class="qpart"><h5>C. Match the following</h5><div class="tbl"><table class="match"><tr><th>Column A</th><th>Column B</th></tr>
+<tr><td>1. <code>(1, 2) + (3,)</code></td><td>p. (5, 6)</td></tr>
+<tr><td>2. <code>("a",) * 3</code></td><td>q. 0</td></tr>
+<tr><td>3. <code>(4, 5, 6)[1:]</code></td><td>r. (1, 2, 3)</td></tr>
+<tr><td>4. <code>(3, 1, 2).index(1)</code></td><td>s. 1</td></tr>
+<tr><td>5. <code>len(())</code></td><td>t. ('a', 'a', 'a')</td></tr>
+</table></div></div>
+<div class="qpart"><h5>D. Debug the code</h5><p>Find <b>three</b> bugs in this code.</p><div class="code"><pre>def min_max(nums):
+    return min(nums) max(nums)
+
+low, high, avg = min_max([4, 9, 1])
+record = ("Ravi", 85)
+record[1] = 90</pre></div></div>
+<div class="qpart"><h5>E. Fill in the missing code</h5><p>Complete the function that returns both the quotient and the remainder.</p><div class="code"><pre>def divide(a, b):
+    return a <span class="gap">____</span> b, a <span class="gap">____</span> b
+
+q, <span class="gap">____</span> = divide(17, 5)
+print(q, r)          # 3 2</pre></div></div>
+<div class="qpart"><h5>F. Predict the output</h5><p>Write the output in your notebook <b>before</b> running it.</p><div class="code"><pre>emp = ("Kiran", (2004, 6, 15), ["Python", "C"])
+emp[2].append("SQL")
+name, dob, skills = emp
+print(name[0], dob[0], len(skills), emp[2][-1])</pre></div></div>
+<div class="qpart"><h5>G. Creative activity</h5><div class="act-wrap">
+<div class="note act"><span class="tag">Design a record</span>Each student designs a tuple for something from their own life (a movie ticket, a phone contact, a cricketer's profile) with at least one nested tuple or list. Write 3 indexing questions about it for your neighbour, e.g. "What gives the show time?". Swap and solve.</div>
+<div class="note act"><span class="tag">Tuple or list? Debate</span>The teacher reads situations: GPS coordinates, a shopping cart, days of the week, today's chat messages, RGB colour. Students hold up T or L cards and one student from each side justifies the choice using the words mutable / immutable.</div>
+</div></div>
+<details class="key"><summary>Answer key (try first!)</summary><div class="keybody">
+<p><b>A.</b> 1-F (it is the int 5) · 2-T · 3-T · 4-F · 5-T</p>
+<p><b>B.</b> 1) <code>(7,)</code> · 2) 4 · 3) 2 · 4) <code>(1, 2, 1, 2)</code> · 5) unpacking</p>
+<p><b>C.</b> 1-r · 2-t · 3-p · 4-s · 5-q</p>
+<p><b>D.</b> (1) missing comma: <code>return min(nums), max(nums)</code>. (2) unpacking 2 values into 3 names → ValueError; use <code>low, high = ...</code>. (3) tuples are immutable; build a new tuple: <code>record = (record[0], 90)</code>.</p>
+<p><b>E.</b> <code>//</code>, <code>%</code>, <code>r</code></p>
+<p><b>F.</b> <code>K 2004 3 SQL</code></p>
+</div></details></div>
+  </section>
+
+  <!-- 2.3 Lists -->
+  <section class="topic" id="m2-list">
+    <h3>2.3 Lists</h3>
+
+    <h4>List values</h4>
+    <p>A <span class="hl">list is an ordered, mutable collection of values</span> (called <b>elements</b> or items), written in square brackets. Elements can be of any type, even mixed, and even other lists (<b>nested list</b>).</p>
+    <div class="code"><pre>marks = [78, 91, 66]
+names = [<span class="s">"Asha"</span>, <span class="s">"Ravi"</span>]
+mixed = [<span class="s">"hello"</span>, 2.0, 5, [10, 20]]   <span class="c"># 4 elements; the last is a list</span>
+empty = []</pre></div>
+
+    <h4>Accessing elements, length &amp; membership</h4>
+    <div class="code"><pre>nums = [17, 123, 87, 34, 66, 8398, 44]
+nums[0], nums[-1]        <span class="c"># (17, 44)</span>
+nums[9 - 8]              <span class="c"># 123  ← any int expression works as index</span>
+nums[1.0]                <span class="c"># TypeError: list indices must be integers</span>
+len(mixed)               <span class="c"># 4  ← a nested list counts as ONE element</span>
+87 <span class="k">in</span> nums                <span class="c"># True</span>
+50 <span class="k">not in</span> nums            <span class="c"># True</span></pre></div>
+
+    <h4>List operations and slices</h4>
+    <div class="code"><pre>a = [1, 2, 3]
+b = [4, 5]
+a + b             <span class="c"># [1, 2, 3, 4, 5]  concatenation (new list)</span>
+[0] * 4           <span class="c"># [0, 0, 0, 0]     repetition</span>
+letters = [<span class="s">"a"</span>, <span class="s">"b"</span>, <span class="s">"c"</span>, <span class="s">"d"</span>, <span class="s">"e"</span>, <span class="s">"f"</span>]
+letters[1:3]      <span class="c"># ['b', 'c']</span>
+letters[:4]       <span class="c"># ['a', 'b', 'c', 'd']</span>
+letters[::-1]     <span class="c"># reversed copy</span></pre></div>
+
+    <h4>Lists are mutable</h4>
+    <p>Unlike strings and tuples, <span class="hg">we can change a list's elements in place</span>: by index, or by assigning to a slice.</p>
+    <div class="code"><pre>fruit = [<span class="s">"banana"</span>, <span class="s">"apple"</span>, <span class="s">"quince"</span>]
+fruit[0] = <span class="s">"pear"</span>               <span class="c"># ['pear', 'apple', 'quince']</span>
+lst = [<span class="s">"a"</span>, <span class="s">"b"</span>, <span class="s">"c"</span>, <span class="s">"d"</span>, <span class="s">"e"</span>]
+lst[1:3] = [<span class="s">"x"</span>, <span class="s">"y"</span>]          <span class="c"># replace:  ['a','x','y','d','e']</span>
+lst[1:3] = []                  <span class="c"># remove:   ['a','d','e']</span>
+lst[1:1] = [<span class="s">"b"</span>, <span class="s">"c"</span>]          <span class="c"># insert:   ['a','b','c','d','e']</span></pre></div>
+
+    <h4>List deletion</h4>
+    <div class="code"><pre>a = [<span class="s">"one"</span>, <span class="s">"two"</span>, <span class="s">"three"</span>, <span class="s">"four"</span>]
+<span class="k">del</span> a[1]          <span class="c"># ['one', 'three', 'four']</span>
+<span class="k">del</span> a[1:]         <span class="c"># ['one']   ← del works with slices too</span></pre></div>
+
+    <h4>Objects and references</h4>
+    <p>Every value is an <span class="hl">object</span>, and a variable holds a <span class="hl">reference</span> to it. Two tests:</p>
+    <div class="two">
+      <div class="note def"><span class="tag"><code>==</code> equality</span>Do they have the <b>same value</b>?</div>
+      <div class="note def"><span class="tag"><code>is</code> identity</span>Do they refer to the <b>same object</b> in memory? (check with <code>id()</code>)</div>
+    </div>
+    <div class="code"><pre>a = [1, 2, 3]
+b = [1, 2, 3]
+a == b      <span class="c"># True   same value</span>
+a <span class="k">is</span> b      <span class="c"># False  two different list objects</span></pre></div>
+    <p>Strings are immutable, so Python may safely let two variables share one string object. For lists, <span class="hg">each <code>[ ]</code> creates a new, separate list</span>.</p>
+
+    <h4>Aliasing</h4>
+    <p>When two variables refer to the same object, they are <span class="hl">aliases</span>. <span class="hp">Changes made through one alias are seen through the other.</span> <span class="scribble">careful!!</span></p>
+    <div class="code"><pre>a = [1, 2, 3]
+b = a            <span class="c"># NOT a copy. b is another name for the same list</span>
+b[0] = 99
+print(a)         <span class="c"># [99, 2, 3]  ← a changed too!</span>
+print(a <span class="k">is</span> b)    <span class="c"># True</span></pre></div>
+    <p>Picture it: two labels <b>a</b> and <b>b</b> stuck on one list.</p>
+
+    <h4>Cloning lists</h4>
+    <p>To modify a list but keep the original, make a <span class="hl">clone</span> (a copy):</p>
+    <div class="code"><pre>a = [1, 2, 3]
+b = a[:]          <span class="c"># slice copy   (also: a.copy()  or  list(a))</span>
+b[0] = 99
+print(a, b)       <span class="c"># [1, 2, 3] [99, 2, 3]</span></pre></div>
+    <div class="note trap"><span class="tag">Trap: shallow copy</span><code>a[:]</code> copies only the outer list. <span class="hp">Inner (nested) lists are still shared.</span> For nested lists use <code>import copy; b = copy.deepcopy(a)</code>.</div>
+
+    <h4>Lists and for loops</h4>
+    <div class="code"><pre><span class="k">for</span> x <span class="k">in</span> nums:                      <span class="c"># read each element</span>
+    print(x)
+
+xs = [1, 2, 3, 4, 5]
+<span class="k">for</span> i <span class="k">in</span> range(len(xs)):           <span class="c"># need the index to CHANGE elements</span>
+    xs[i] = xs[i] ** 2            <span class="c"># xs → [1, 4, 9, 16, 25]</span>
+
+<span class="k">for</span> (i, v) <span class="k">in</span> enumerate([<span class="s">"x"</span>, <span class="s">"y"</span>]):  <span class="c"># index and value together</span>
+    print(i, v)</pre></div>
+    <div class="note trap"><span class="tag">Trap</span><span class="hp"><code>for x in xs: x = x * 2</code> does NOT change the list.</span> <code>x</code> is just a temporary name for each element. Use the index form.</div>
+
+    <h4>List parameters</h4>
+    <p>Passing a list to a function passes a <b>reference</b>, so the parameter becomes an <span class="hl">alias</span> of the caller's list. <span class="hg">If the function changes the list, the caller sees the change.</span></p>
+    <div class="code"><pre><span class="k">def</span> double_stuff(a_list):
+    <span class="s">"""Overwrite each element with double its value."""</span>
+    <span class="k">for</span> (idx, val) <span class="k">in</span> enumerate(a_list):
+        a_list[idx] = 2 * val
+
+things = [2, 5, 9]
+double_stuff(things)
+print(things)          <span class="c"># [4, 10, 18]</span></pre></div>
+
+    <h4>List methods</h4>
+    <div class="tbl"><table>
+      <tr><th>Method</th><th>What it does</th><th>Returns</th></tr>
+      <tr><td><code>append(x)</code></td><td>add x at the end</td><td>None</td></tr>
+      <tr><td><code>insert(i, x)</code></td><td>insert x at position i</td><td>None</td></tr>
+      <tr><td><code>extend(lst2)</code></td><td>add all items of lst2 at the end</td><td>None</td></tr>
+      <tr><td><code>remove(x)</code></td><td>delete first occurrence of x (ValueError if absent)</td><td>None</td></tr>
+      <tr><td><code>pop()</code> / <code>pop(i)</code></td><td>remove and give back last item / item at i</td><td><span class="hb">the item</span></td></tr>
+      <tr><td><code>index(x)</code></td><td>position of first x</td><td>int</td></tr>
+      <tr><td><code>count(x)</code></td><td>how many times x occurs</td><td>int</td></tr>
+      <tr><td><code>sort()</code></td><td>sort in place (<code>reverse=True</code> for descending)</td><td>None</td></tr>
+      <tr><td><code>reverse()</code></td><td>reverse in place</td><td>None</td></tr>
+      <tr><td><code>clear()</code></td><td>remove all items</td><td>None</td></tr>
+      <tr><td><code>copy()</code></td><td>shallow copy</td><td>new list</td></tr>
+    </table></div>
+    <div class="note trap"><span class="tag">Trap: methods that return None</span>
+      <div class="code" style="margin-top:4px"><pre>x = [3, 1, 2]
+x = x.sort()     <span class="c"># WRONG: x is now None!</span>
+x.sort()         <span class="c"># right: sorts x in place</span>
+y = sorted(x)    <span class="c"># or: built-in sorted() returns a NEW sorted list</span></pre></div>
+      <span class="hp">append, insert, sort, reverse, remove change the list and return None.</span> Never assign their result.</div>
+
+    <h4>Pure functions and modifiers</h4>
+    <div class="two">
+      <div class="note def"><span class="tag">Modifier</span>Changes the list passed to it (<b>side effect</b>). Example: <code>double_stuff</code> above.</div>
+      <div class="note def"><span class="tag">Pure function</span><span class="hl">Does not change its arguments</span>; it builds and returns a new value. No side effects.</div>
+    </div>
+    <div class="code"><pre><span class="k">def</span> doubled(a_list):           <span class="c"># pure version</span>
+    new_list = []
+    <span class="k">for</span> value <span class="k">in</span> a_list:
+        new_list.append(2 * value)
+    <span class="k">return</span> new_list
+
+things = [2, 5, 9]
+xs = doubled(things)
+print(things, xs)              <span class="c"># [2, 5, 9] [4, 10, 18]</span></pre></div>
+    <p><span class="hg">Prefer pure functions.</span> They are easier to test and cause fewer surprises. Use modifiers only when copying would be too slow.</p>
+
+    <h4>Functions that produce lists</h4>
+    <p>The standard pattern (memorise it):</p>
+    <div class="code"><pre><span class="k">def</span> primes_upto(n):
+    result = []                      <span class="c"># 1. start with an empty list</span>
+    <span class="k">for</span> i <span class="k">in</span> range(2, n + 1):         <span class="c"># 2. loop</span>
+        <span class="k">if</span> is_prime(i):
+            result.append(i)         <span class="c"># 3. append what qualifies</span>
+    <span class="k">return</span> result                    <span class="c"># 4. return the list</span></pre></div>
+
+    <h4>Strings and lists</h4>
+    <div class="code"><pre>list(<span class="s">"Crunchy Frog"</span>)            <span class="c"># ['C','r','u','n','c','h','y',' ','F','r','o','g']</span>
+<span class="s">"The rain in Spain"</span>.split()      <span class="c"># ['The', 'rain', 'in', 'Spain']</span>
+<span class="s">"The rain in Spain"</span>.split(<span class="s">"ai"</span>)  <span class="c"># ['The r', 'n in Sp', 'n']</span>
+<span class="s">" "</span>.join([<span class="s">"I"</span>, <span class="s">"love"</span>, <span class="s">"Python"</span>])  <span class="c"># 'I love Python'</span>
+<span class="s">""</span>.join(reversed(list(<span class="s">"abc"</span>)))   <span class="c"># 'cba'</span></pre></div>
+
+    <h4><code>list</code> and <code>range</code></h4>
+    <p><code>range()</code> does not create all its numbers at once. It produces them one at a time as needed (it is <span class="hl">lazy</span>, saving memory). Wrap it in <code>list()</code> to see them.</p>
+    <div class="code"><pre>range(10)             <span class="c"># range(0, 10)</span>
+list(range(10))       <span class="c"># [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
+list(range(1, 10, 3)) <span class="c"># [1, 4, 7]</span></pre></div>
+
+    <h4>Nested lists</h4>
+    <div class="code"><pre>nested = [<span class="s">"hello"</span>, 2.0, 5, [10, 20]]
+elem = nested[3]        <span class="c"># [10, 20]</span>
+nested[3][0]            <span class="c"># 10  ← two bracket operators, left to right</span></pre></div>
+
+    <h4>Matrices</h4>
+    <p>A <span class="hl">matrix is represented as a list of lists</span>: each inner list is one row. <code>m[row][col]</code> picks an element.</p>
+    <div class="code"><pre>mx = [[1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9]]
+mx[1]          <span class="c"># [4, 5, 6]  (row 1)</span>
+mx[1][2]       <span class="c"># 6</span>
+
+<span class="c"># transpose with nested loops</span>
+rows, cols = len(mx), len(mx[0])
+t = []
+<span class="k">for</span> j <span class="k">in</span> range(cols):
+    new_row = []
+    <span class="k">for</span> i <span class="k">in</span> range(rows):
+        new_row.append(mx[i][j])
+    t.append(new_row)
+print(t)</pre><pre class="out">[[1, 4, 7], [2, 5, 8], [3, 6, 9]]</pre></div>
+    <div class="note trap"><span class="tag">Trap: the aliasing matrix</span>
+      <div class="code" style="margin-top:4px"><pre>grid = [[0] * 3] * 3      <span class="c"># looks like a 3x3 grid of zeros...</span>
+grid[0][0] = 5
+print(grid)               <span class="c"># [[5, 0, 0], [5, 0, 0], [5, 0, 0]]  ← all rows changed!</span></pre></div>
+      <span class="hp"><code>* 3</code> repeats the <b>same</b> inner list three times (3 aliases).</span> Build each row separately:
+      <code>grid = []; for i in range(3): grid.append([0] * 3)</code>
+    </div>
+
+    <div class="ex"><span class="tag">✎ Exercises 2.3</span>
+      <ol>
+        <li><span class="lvl">★</span> Lab 2b: create a list and perform insert, remove, append, length, pop, clear, printing the list after each step. Then try <code>remove</code> on a missing value and note the error.</li>
+        <li><span class="lvl">★</span> Read N numbers into a list and print mean, variance and standard deviation (lab 3a) without using any library.</li>
+        <li><span class="lvl">★★</span> Find the second largest element <b>in one pass</b>, without sorting and without <code>max()</code>. Make sure <code>[5, 5, 3]</code> gives 3, and handle a list where all values are equal.</li>
+        <li><span class="lvl">★★</span> Write two versions of <code>remove_duplicates</code>: a pure function returning a new list, and a modifier that changes the list in place. Both must keep the original order.</li>
+        <li><span class="lvl">★★</span> Rotate a list right by k positions <b>in place</b> (k may be larger than the length). <code>[1,2,3,4,5]</code>, k = 7 → <code>[4,5,1,2,3]</code>.</li>
+        <li><span class="lvl">★★</span> Merge two already-sorted lists into one sorted list using two index pointers (no <code>sort()</code>, no <code>+</code> then sort).</li>
+        <li><span class="lvl">★★★</span> Predict, then verify:
+          <div class="code" style="margin-top:6px"><pre>a = [1, 2, 3]
+b = a
+c = a[:]
+b.append(4)
+c[0] = 100
+a = a + [5]
+print(a, b, c)
+print(a <span class="k">is</span> b)</pre></div>
+          <details><summary>hint</summary><p><code>a + [5]</code> creates a <b>new</b> list and re-binds a, so after that line a and b are no longer aliases. <code>append</code> changed the shared list.</p></details></li>
+        <li><span class="lvl">★★★</span> Write <code>mat_mul(A, B)</code> for matrices of any compatible size. It must print a clear message and return None if the sizes don't match. Test with a 2×3 and a 3×2 matrix.</li>
+        <li><span class="lvl">★★★</span> Build Pascal's triangle as a list of lists for n rows (each row built from the previous one), then print it centred using <code>format()</code>.</li>
+        <li><span class="lvl">★★★</span> Print the elements of an m × n matrix in <b>spiral order</b> (clockwise from top-left). Test with 3×3, 3×4 and 1×5.</li>
+      </ol>
+    </div>
+<div class="quiz" id="q23"><span class="tag">✔ Check Your Understanding 2.3</span>
+<div class="qpart"><h5>A. True or False</h5><ol class="tf">
+<li><span>Lists are mutable.</span><span class="tfbox">T / F</span></li>
+<li><span><code>b = a</code> makes a separate copy of list a.</span><span class="tfbox">T / F</span></li>
+<li><span><code>x.sort()</code> returns the sorted list.</span><span class="tfbox">T / F</span></li>
+<li><span><code>[1, 2] == [1, 2]</code> is True but <code>[1, 2] is [1, 2]</code> is False.</span><span class="tfbox">T / F</span></li>
+<li><span><code>del</code> can delete a whole slice of a list.</span><span class="tfbox">T / F</span></li>
+<li><span><code>len([1, [2, 3], 4])</code> is 4.</span><span class="tfbox">T / F</span></li>
+</ol></div>
+<div class="qpart"><h5>B. Fill in the blanks</h5><ol>
+<li><code>[1, 2, 3] + [4]</code> gives <span class="blank"></span>.</li>
+<li><code>[0] * 3</code> gives <span class="blank"></span>.</li>
+<li>The method that adds one element at the end of a list is <span class="blank"></span>.</li>
+<li>Two names that refer to the same list object are called <span class="blank"></span>.</li>
+<li>If <code>m = [[1, 2], [3, 4]]</code>, then <code>m[1][0]</code> is <span class="blank"></span>.</li>
+<li>A function that does not change its arguments is called a <span class="blank"></span> function.</li>
+</ol></div>
+<div class="qpart"><h5>C. Match the following</h5><div class="tbl"><table class="match"><tr><th>Column A</th><th>Column B</th></tr>
+<tr><td>1. <code>append(x)</code></td><td>p. deletes the item at i and returns it</td></tr>
+<tr><td>2. <code>insert(i, x)</code></td><td>q. adds every item of L at the end</td></tr>
+<tr><td>3. <code>extend(L)</code></td><td>r. empties the list</td></tr>
+<tr><td>4. <code>remove(x)</code></td><td>s. adds x at the end</td></tr>
+<tr><td>5. <code>pop(i)</code></td><td>t. deletes the first x (by value)</td></tr>
+<tr><td>6. <code>clear()</code></td><td>u. puts x at position i</td></tr>
+</table></div></div>
+<div class="qpart"><h5>D. Debug the code</h5><p>This code should remove all negative numbers, but prints <code>[3, -4, 5]</code>. Explain <b>why</b>, then fix it. Also find the bug in the second snippet.</p><div class="code"><pre>nums = [3, -1, -4, 5, -2]
+for x in nums:
+    if x &lt; 0:
+        nums.remove(x)
+print(nums)
+
+marks = [45, 78, 62]
+marks = marks.append(90)
+print(len(marks))</pre></div></div>
+<div class="qpart"><h5>E. Fill in the missing code</h5><p>Complete the code to add two matrices.</p><div class="code"><pre>A = [[1, 2], [3, 4]]
+B = [[5, 6], [7, 8]]
+C = []
+for i in range(len(A)):
+    row = <span class="gap">____</span>
+    for j in range(len(A[0])):
+        row.append(<span class="gap">____</span> + <span class="gap">____</span>)
+    C.<span class="gap">____</span>(row)
+print(C)          # [[6, 8], [10, 12]]</pre></div></div>
+<div class="qpart"><h5>F. Predict the output</h5><p>Write the output in your notebook <b>before</b> running it.</p><div class="code"><pre>a = [1, 2, 3]
+b = a
+b[0] = 10
+c = b[:]
+c[1] = 20
+print(a, b, c)</pre></div></div>
+<div class="qpart"><h5>G. Creative activity</h5><div class="act-wrap">
+<div class="note act"><span class="tag">Human list</span>Six students stand in a row holding number cards: this is the list. The teacher calls methods one by one: <code>append(9)</code>, <code>insert(0, 4)</code>, <code>pop()</code>, <code>remove(4)</code>, <code>sort()</code>, <code>reverse()</code>. Before the students move, the rest of the class writes the predicted list. Then check.</div>
+<div class="note act"><span class="tag">Memory map art</span>Draw a boxes-and-arrows diagram for the predict-the-output code above: variable names on the left, list objects on the right, arrows for references. Colour aliases with the same highlighter. Display the best diagrams on the class board.</div>
+</div></div>
+<details class="key"><summary>Answer key (try first!)</summary><div class="keybody">
+<p><b>A.</b> 1-T · 2-F · 3-F (returns None) · 4-T · 5-T · 6-F (3)</p>
+<p><b>B.</b> 1) <code>[1, 2, 3, 4]</code> · 2) <code>[0, 0, 0]</code> · 3) <code>append()</code> · 4) aliases · 5) 3 · 6) pure</p>
+<p><b>C.</b> 1-s · 2-u · 3-q · 4-t · 5-p · 6-r</p>
+<p><b>D.</b> Removing items from a list while looping over it shifts the remaining items left, so the loop skips the element right after each removed one (-4 is skipped). Fix: build a new list: <code>result = []</code> then <code>for x in nums: if x &gt;= 0: result.append(x)</code>. Second snippet: <code>append</code> returns None, so marks becomes None and <code>len(None)</code> → TypeError; write just <code>marks.append(90)</code>.</p>
+<p><b>E.</b> <code>[]</code>, <code>A[i][j]</code>, <code>B[i][j]</code>, <code>append</code></p>
+<p><b>F.</b> <code>[10, 2, 3] [10, 2, 3] [10, 20, 3]</code></p>
+</div></details></div>
+  </section>
+
+  <!-- Scenarios M2 -->
+  <section class="topic" id="m2-scen">
+    <h3>Think &amp; Apply — Module 2 Scenarios</h3>
+    <p>These need you to pick the right data structure (string, tuple, list, nested list) <b>before</b> you code. Write one line explaining your choice for each.</p>
+    <div class="scen-wrap">
+      <div class="scen">
+        <h4>1. Train ticket decoder</h4>
+        <p>A booking app sends ticket data as one string: <code>"SBC-MAS|12007|2026-11-14|S4:32,S4:33,S4:34|1350.00"</code>. Split it and print a neat ticket: from, to, train number, date in <code>14/11/2026</code> format, each passenger's coach and seat on separate lines, number of passengers, and fare per passenger to 2 decimals.</p>
+        <p class="uses">uses: split with different separators, slicing, tuple unpacking, format()</p>
+      </div>
+      <div class="scen">
+        <h4>2. Hostel mess feedback analyser</h4>
+        <p>You have 15 feedback sentences from students (store them in a list). Clean each one (lowercase, remove punctuation), count total words, find the longest feedback, and count how many mention complaint words from the list <code>["cold", "salty", "late", "oily"]</code>. Print the most common complaint.</p>
+        <p class="uses">uses: cleaning strings, split, in, counting pattern, lists in parallel</p>
+      </div>
+      <div class="scen">
+        <h4>3. Department library</h4>
+        <p>Each book is a tuple <code>(book_id, title, author)</code> and availability is kept in a separate list of booleans. Write functions: <code>search(title_part)</code> (case-insensitive partial match), <code>issue(book_id)</code>, <code>return_book(book_id)</code>, and <code>report()</code> that prints a formatted table. Why is a book a tuple but availability a list?</p>
+        <p class="uses">uses: list of tuples, find / in, list mutation, format()</p>
+      </div>
+      <div class="scen">
+        <h4>4. Cricket over-by-over scorer</h4>
+        <p>Ball-by-ball data for an innings is a string: <code>"1 4 0 W 6 2 | 0 0 1 1 W 4 | 6 6 1 0 2 1"</code> where <code>|</code> separates overs. Compute runs per over (list), total runs, wickets, number of 4s and 6s, and the best over. Extend: handle <code>"1nb"</code> (no-ball) and <code>"1wd"</code> (wide) which add an extra run and don't count as a legal ball.</p>
+        <p class="uses">uses: nested split, isdigit, list building, tracking max</p>
+      </div>
+      <div class="scen">
+        <h4>5. Exam hall seating grid</h4>
+        <p>An exam hall has 5 rows × 6 benches, stored as a matrix of <code>'X'</code> (occupied) and <code>'.'</code> (free). Print the hall map, count free seats per row, find the first free seat (row, bench), and find two <b>adjacent</b> free seats in the same row for a pair of students. Build the grid correctly (remember the aliasing trap!).</p>
+        <p class="uses">uses: matrices, nested loops, tuples as return values, break</p>
+      </div>
+      <div class="scen">
+        <h4>6. Two shops, one price list (aliasing bug)</h4>
+        <p>A shop owner opens a second branch. The program does <code>branch_b = branch_a</code> for the price list, then gives a 10% discount at branch B, and suddenly branch A's prices drop too. Reproduce the bug, draw a diagram of what is happening in memory, and fix it in two ways. Then the price list becomes <code>[["rice", 60], ["dal", 120]]</code>. Does your fix still work? Why not?</p>
+        <p class="uses">uses: aliasing, cloning, shallow vs deep copy</p>
+      </div>
+      <div class="scen">
+        <h4>7. Password strength checker</h4>
+        <p>The college portal asks you to set a password. Rules: at least 8 characters, at least one uppercase, one lowercase, one digit, one special character, no spaces, and it must not contain the user's first name (case-insensitive). Report <b>every</b> rule that fails, not just the first, and rate it Weak / Medium / Strong.</p>
+        <p class="uses">uses: traversal, isupper/isdigit…, in, lower, list of messages</p>
+      </div>
+      <div class="scen">
+        <h4>8. Student email ID generator</h4>
+        <p>From a full name like <code>"  sachin ramesh KUMAR "</code> and a USN like <code>"1XX24CS057"</code>, generate an email: first name + "." + last name + two-digit admission year + "@college.edu" in lowercase (→ <code>sachin.kumar24@college.edu</code>). If the same email already exists in the list of issued emails, add 1, 2, 3… at the end of the name part.</p>
+        <p class="uses">uses: strip, split, slicing, lower, in, while loop for uniqueness</p>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- Revision -->
+<section class="topic" id="revise">
+  <h3>Last-Minute Revision</h3>
+  <div class="idx">
+    <div class="note exam"><span class="tag">Module 1 must-know</span>
+      <ul>
+        <li>3 error types with one example each</li>
+        <li><code>/</code> vs <code>//</code> vs <code>%</code>, with negative numbers</li>
+        <li>PEMDAS; <code>**</code> is right to left</li>
+        <li><code>input()</code> returns str → convert</li>
+        <li>for vs while: when to use which</li>
+        <li>Collatz program (write from memory)</li>
+        <li>break vs continue</li>
+        <li>print vs return; <code>None</code></li>
+      </ul>
+    </div>
+    <div class="note exam"><span class="tag">Module 2 must-know</span>
+      <ul>
+        <li>indexing, negative index, slicing rules</li>
+        <li>strings &amp; tuples immutable, lists mutable</li>
+        <li>own <code>find</code> with optional parameters</li>
+        <li>split / join / strip / format</li>
+        <li>tuple assignment &amp; returning tuples</li>
+        <li><code>==</code> vs <code>is</code>; aliasing vs cloning</li>
+        <li>pure function vs modifier</li>
+        <li>matrix as list of lists; <code>[[0]*3]*3</code> trap</li>
+      </ul>
+    </div>
+    <div class="note trap"><span class="tag">Top 6 lab mistakes</span>
+      <ol>
+        <li>forgetting <code>int()</code> around <code>input()</code></li>
+        <li>missing colon or wrong indentation</li>
+        <li><code>x = x.sort()</code></li>
+        <li>infinite while (no update)</li>
+        <li><code>s[len(s)]</code> IndexError</li>
+        <li><code>b = a</code> thinking it's a copy</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<p class="end">— end of Modules 1 &amp; 2 — <span class="scribble">practice daily!</span></p>
+</div>
+
+</body></html>
